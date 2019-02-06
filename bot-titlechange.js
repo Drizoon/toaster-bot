@@ -1108,8 +1108,9 @@ async function connect() {
     console.log("Connecting to Twitch IRC...");
     await client.connect();
 
-    sendMessage(config.startupChannel, 'Running!');
-
+    sendMessage(config.startupChannel, 'Reporting for duty NaM 7');
+	sendMessage("bananabrea", 'Reporting for duty NaM 7');
+	sendMessage("drizoon",'Reporting for duty NaM 7');
     console.log("Starting refresh loop");
 
     // intentionally don't await this promise, since we want to start the refresh loop right away.

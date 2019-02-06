@@ -13,7 +13,8 @@ const opts = {
     channels: [
         '#niosver',
         '#drizoon',
-        '#bananabrea'/**/
+        '#bananabrea',
+		'#vincie'/**/
     ]
 };
 
@@ -74,7 +75,8 @@ let enabledChannels = {
 		"formats": {
 			"title": "drizooLurk New Title 👉 $VALUE$ 👉 ",
 			"game": "drizooLurk Game has been updated 👉 $VALUE$ 👉 ",
-			"live": "Live ppHop 👉 "
+			"live": "Live ppHop 👉 ",
+			"partner": "PogChamp Dad is partnered PogChamp 👉 "
 		},
 	},
 	"bananabrea": {
@@ -85,7 +87,15 @@ let enabledChannels = {
 			"offline": "Mum is offline FeelsGoodMan Clap 👉 ",
 			"live": "Mum is live peepoPog 👉 "
 		},
+	},
+	"vincie": {
+		"id": 54502482,
+		"formats": {
+			"live": "Vince is live with yearly stream FeelsGoodMan Clap 👉 ",
+			"offline": "ButterSauce Another year of silence ButterSauce 👉 "
+		},
 	}
+
 	/*
     "randers00": {
         "id": 40286300,
@@ -136,15 +146,6 @@ let enabledChannels = {
             ]
         }
     },
-    "supinic": {
-        "id": 31400525,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp 👉 $VALUE$ 👉 ",
-            "live": "ppHop supinic has gone live ppHop 👉 ",
-            "offline": "FeelsBadMan supinic has gone offline FeelsBadMan 👉 "
-        },
-    },
     "nymn": {
         "id": 62300805,
         "formats": {
@@ -162,24 +163,6 @@ let enabledChannels = {
             ]
         }
     },
-    "bajlada": {
-        "id": 159849156,
-        "formats": {
-            "title": "yeetDog NEW TITLE! yeetDog 👉 $VALUE$ 👉 ",
-            "game": "yeetDog NEW GAME! yeetDog 👉 $VALUE$ 👉 ",
-            "live": "yeetDog bajlada HAS GONE LIVE! yeetDog 👉 ",
-            "offline": "yeetDog bajlada HAS GONE OFFLINE! yeetDog 👉 "
-        }
-    },
-    "fourtf": {
-        "id": 54633016,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp FeelsPingedMan 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp FeelsPingedMan 👉 $VALUE$ 👉 ",
-            "live": "PagChomp FOURTF HAS GONE LIVE! PagChomp FeelsPingedMan 👉 ",
-            "offline": "FeelsBadMan FOURTF HAS GONE OFFLINE! FeelsBadMan 👉 ",
-        }
-    },
     "vadikus007": {
         "id": 72256775,
         "formats": {
@@ -192,15 +175,6 @@ let enabledChannels = {
         "protection": {
             "lengthLimit": 250
         }
-    },
-    "akkirasetsu": {
-        "id": 117423271,
-        "formats": {
-            "title": "RoWOW NEW TITLE! RoWOW 👉 $VALUE$ 👉 ",
-            "game": "RoWOW NEW GAME! RoWOW 👉 $VALUE$ 👉 ",
-            "live": "RoWOW 👉 AkkiRasetsu has gone live POI 👉 ",
-            "offline": "FeelsAkariMan AkkiRasetsu has gone offline FeelsAkariMan  👉 "
-        },
     }**//**/
 	
 };
