@@ -27,7 +27,7 @@ const krakenClientId = secrets.krakenClientId;
 // list of users with superuser privileges. Use with extreme caution, since
 // these users have access to arbitrary code execution with !debug
 let administrators = [
-    'Niosver'
+    'niosver'
 ];
 
 // The bot will post a "I am running"-style message to this channel on startup.

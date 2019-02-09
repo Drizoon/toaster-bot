@@ -61,7 +61,7 @@ async function notify(channelName, context, params) {
         notifyuser: user,
         notifymessage: message
     });
-	await saveCurrentNotify();
+	saveCurrentNotify();
 	await sendReply(channelName,context["display-name"],`The user ${user} `+
 	`will get your message next time they type in chat ${message}`);
 }
@@ -77,12 +77,14 @@ async function loadCurrentNotify() {
     }
 }
 
-async function dumpNotify() {
-	if (!config.administrators.includes(context["username"])) {
+async function dumpNotify(channelName,context) {
+	if (!config.administrators.includes(context.username)) {
         return;
     }
-	currentNotify.length =0;
+	currentNotify.length=0;
 	saveCurrentNotify();
+	await sendReply(channelName,context.username,`${context.username}` +
+	` emptied the notify list`);
 }
 // only the events that have a configured format are supported by a channel.
 function getChannelAvailableEvents(channelName) {
@@ -1169,9 +1171,12 @@ function onMessageHandler(target, context, msg, self) {
 	msg = msg.replace(endStripRegex, '');
     msg = msg.trim();
 	
+	// trim away the leading # character
+    target = target.substring(1);
+	
 	for(let i=0;i<currentNotify.length;i++) {
 		if(currentNotify[i].notifyuser === context.username) {
-			sendReply(target.substring(1,target.length),context.username,currentNotify[i].notifymessage);
+			sendReply(target,context.username,currentNotify[i].notifymessage);
 			currentNotify.splice(i,1);
 		}	
 	}
@@ -1182,8 +1187,6 @@ function onMessageHandler(target, context, msg, self) {
         return;
     }
 
-    // trim away the leading # character
-    target = target.substring(1);
 
     // Split the message into individual words:
     const parse = msg.slice(1).split(' ');
