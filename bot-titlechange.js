@@ -44,8 +44,6 @@ const knownCommands = [
 // "forsen": { "title": <title>, "game": <game>, "live": true/false, }
 let currentData = {};
 //stores notifications for user
-//stores for each user:
-// "drizoon": {"Niosver": "FeelsOkayMan", "airiui": "FeelsDankMan"}
 let currentNotify = [];
 const invisibleAntiPingCharacter = "\u206D";
 
@@ -63,9 +61,19 @@ async function notify(channelName, context, params) {
         notifyuser: user,
         notifymessage: message
     });
+	
 	saveCurrentNotify();
-	await sendReply(channelName,context["display-name"],`The user ${user} `+
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	
+	if(!(offlineChatOnly && currentData[channelName]["live"])) {
+		await sendReply(channelName,context["display-name"],`The user ${user} `+
 	`will get your message next time they type in chat ${message}`);
+	}
 }
 
 async function saveCurrentNotify() {
@@ -1175,15 +1183,22 @@ function onMessageHandler(target, context, msg, self) {
 	
 	// trim away the leading # character
     target = target.substring(1);
+	let channelData = config.enabledChannels[target];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
 	
-	for(let i=0;i<currentNotify.length;i++) {
-		if(currentNotify[i].notifyuser === context.username) {
-			sendReply(target,context.username,currentNotify[i].notifymessage);
-			currentNotify.splice(i,1);
-		}	
+	if(!(offlineChatOnly && currentData[target]["live"])) {
+		for(let i=0;i<currentNotify.length;i++) {
+			if(currentNotify[i].notifyuser === context.username) {
+				sendReply(target,context.username,currentNotify[i].notifymessage);
+				currentNotify.splice(i,1);
+			}	
+		}
+		saveCurrentNotify();
 	}
-	saveCurrentNotify();
-	
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
         return;
@@ -1200,7 +1215,7 @@ function onMessageHandler(target, context, msg, self) {
 
     let channelConfig = config.enabledChannels[target] || {};
     let disabledCommands = (channelConfig.protection || {}).disabledCommands || [];
-
+	
     for (let i = 0; i < knownCommands.length; i++) {
         if (knownCommands[i].name.toUpperCase() === commandName.toUpperCase()) {
             // is the command disabled?

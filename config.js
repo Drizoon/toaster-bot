@@ -70,6 +70,9 @@ let enabledChannels = {
 			"offline": "Niosver is offline FeelsGoodMan Clap 👉 ",
 			"live": "Niosver is live peepoChrist 👉 "
 		},
+		/*"protection": {
+            "offlineOnly": true
+        }*/
 	},
 	"drizoon": {
 		"id": 26890918,
