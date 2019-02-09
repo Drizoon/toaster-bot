@@ -27,13 +27,7 @@ const knownCommands = [
     game,
     islive,
     help,
-    titlechangebot_help,
-    titlechangebothelp,
-    tcb_help,
-    tcbhelp,
     bot,
-    titlechange_bot,
-    titlechangebot,
     ping,
     tcbping,
     setData,
@@ -41,12 +35,46 @@ const knownCommands = [
     debug,
     tcbdebug,
     quit,
-    tcbquit];
+    tcbquit,
+	notify];
 
 // the main data storage object.
 // stores for each channel (key):
 // "forsen": { "title": <title>, "game": <game>, "live": true/false, }
 let currentData = {};
+//stores notifications for user
+//stores for each user:
+// "drizoon": {"Niosver": "FeelsOkayMan", "airiui": "FeelsDankMan"}
+let currentNotify = [];
+
+async function notify(channelName, context, params) {
+	
+	if (params.length < 2) {
+        await sendReply(channelName, context["display-name"], `You must specify a username and a message to notify`);
+        return;
+    }
+	let user = params[0];
+	let message = context.username + " : " + params.slice(1).join(" ");
+	
+	currentNotify.push({
+        notifyuser: user,
+        notifymessage: message
+    });
+	await saveCurrentNotify();
+	await sendReply(channelName,context["display-name"],`The user ${user} `+
+	`will get your message next time they type in chat ${message}`);
+}
+
+async function saveCurrentNotify() {
+    await storage.setItem('currentNotify', currentNotify);
+}
+
+async function loadCurrentNotify() {
+    let loadedObj = await storage.getItem('currentNotify');
+    if (typeof loadedObj !== "undefined") {
+        currentNotify = loadedObj;
+    }
+}
 
 // only the events that have a configured format are supported by a channel.
 function getChannelAvailableEvents(channelName) {
@@ -1104,13 +1132,12 @@ async function connect() {
     await storage.init();
     console.log("Loading from storage...");
     await loadUserSubscriptions();
+	await loadCurrentNotify();
     await loadMotd();
     console.log("Connecting to Twitch IRC...");
     await client.connect();
 
     sendMessage(config.startupChannel, 'Reporting for duty NaM 7');
-	sendMessage("bananabrea", 'Reporting for duty NaM 7');
-	sendMessage("drizoon",'Reporting for duty NaM 7');
     console.log("Starting refresh loop");
 
     // intentionally don't await this promise, since we want to start the refresh loop right away.
@@ -1130,10 +1157,18 @@ function onMessageHandler(target, context, msg, self) {
     if (context['message-type'] === 'whisper') {
         return;
     }
-
-    msg = msg.replace(endStripRegex, '');
+	
+	msg = msg.replace(endStripRegex, '');
     msg = msg.trim();
-
+	
+	for(let i=0;i<currentNotify.length;i++) {
+		if(currentNotify[i].notifyuser === context.username) {
+			sendReply(target.substring(1,target.length),context.username,currentNotify[i].notifymessage);
+			currentNotify.splice(i,1);
+		}	
+	}
+	saveCurrentNotify();
+	
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
         return;
@@ -1169,6 +1204,7 @@ function onMessageHandler(target, context, msg, self) {
             );
         }
     }
+	
 }
 
 function onTimeoutHandler(channelName, username, reason, duration) {
