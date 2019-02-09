@@ -15,8 +15,7 @@ const opts = {
         '#drizoon',
         '#bananabrea',
 		'#vincie',
-		'#carlson5233',
-		'#woops'/**/
+		'#carlson5233'/**/
     ]
 };
 
