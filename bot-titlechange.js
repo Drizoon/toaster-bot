@@ -36,7 +36,8 @@ const knownCommands = [
     tcbdebug,
     quit,
     tcbquit,
-	notify];
+	notify,
+	dumpNotify];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -76,6 +77,13 @@ async function loadCurrentNotify() {
     }
 }
 
+async function dumpNotify() {
+	if (!config.administrators.includes(context["username"])) {
+        return;
+    }
+	currentNotify.length =0;
+	saveCurrentNotify();
+}
 // only the events that have a configured format are supported by a channel.
 function getChannelAvailableEvents(channelName) {
     // available events for signing up for pings
