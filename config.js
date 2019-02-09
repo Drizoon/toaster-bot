@@ -106,7 +106,8 @@ let enabledChannels = {
 			"live": "carlson is live FeelsOkayMan 👉 "
 		},
 	},
-	"woops": {
+	//Normie streamers ResidentSleeper can't handle offlineOnly bots ResidentSleeper
+	/*"woops": {
 		"id": 38927816,
 		"formats": {
 			"live": "live Champ 👉 ",
@@ -121,7 +122,7 @@ let enabledChannels = {
                 "debug"
             ]
 		}
-	}
+	}*/
 
 	/*
     "randers00": {
