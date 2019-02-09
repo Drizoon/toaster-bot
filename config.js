@@ -15,7 +15,8 @@ const opts = {
         '#drizoon',
         '#bananabrea',
 		'#vincie',
-		'#carlson5233'/**/
+		'#carlson5233',
+		'#woops'/**/
     ]
 };
 
@@ -104,6 +105,22 @@ let enabledChannels = {
 		"formats": {
 			"live": "carlson is live FeelsOkayMan 👉 "
 		},
+	},
+	"woops": {
+		"id": 38927816,
+		"formats": {
+			"live": "live Champ 👉 ",
+			"offline": "stream offline FeelsGoodMan Clap 👉 ",
+			"title": "title has been changed ErynStaryn 👉 ",
+			"game": "game has been changed ErynStaryn 👉 ",
+		},
+		"protection": {
+			"offlineOnly": true,
+			"noPingMode": true,
+			"disabledCommands": [
+                "debug"
+            ]
+		}
 	}
 
 	/*
