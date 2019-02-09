@@ -53,7 +53,7 @@ async function notify(channelName, context, params) {
         await sendReply(channelName, context["display-name"], `You must specify a username and a message to notify`);
         return;
     }
-	let user = params[0];
+	let user = params[0].toLowerCase();
 	let pinger = context.username.split('').join(invisibleAntiPingCharacter);
 	let message = pinger + " : " + params.slice(1).join(" ");
 	
