@@ -47,6 +47,7 @@ let currentData = {};
 //stores for each user:
 // "drizoon": {"Niosver": "FeelsOkayMan", "airiui": "FeelsDankMan"}
 let currentNotify = [];
+const invisibleAntiPingCharacter = "\u206D";
 
 async function notify(channelName, context, params) {
 	
@@ -55,7 +56,8 @@ async function notify(channelName, context, params) {
         return;
     }
 	let user = params[0];
-	let message = context.username + " : " + params.slice(1).join(" ");
+	let pinger = context.username.split('').join(invisibleAntiPingCharacter);
+	let message = pinger + " : " + params.slice(1).join(" ");
 	
 	currentNotify.push({
         notifyuser: user,

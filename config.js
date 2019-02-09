@@ -14,7 +14,8 @@ const opts = {
         '#niosver',
         '#drizoon',
         '#bananabrea',
-		'#vincie'/**/
+		'#vincie',
+		'#carlson5233'/**/
     ]
 };
 
@@ -93,6 +94,12 @@ let enabledChannels = {
 		"formats": {
 			"live": "Vince is live with yearly stream FeelsGoodMan Clap 👉 ",
 			"offline": "ButterSauce Another year of silence ButterSauce 👉 "
+		},
+	},
+	"carlson5233": {
+		"id": 25495913,
+		"formats": {
+			"live": "carlson is live FeelsOkayMan 👉 "
 		},
 	}
 
