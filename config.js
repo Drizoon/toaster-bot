@@ -15,7 +15,8 @@ const opts = {
         '#drizoon',
         '#bananabrea',
 		'#vincie',
-		'#carlson5233'/**/
+		'#carlson5233',
+		'#cailighto'/**/
     ]
 };
 
@@ -105,23 +106,12 @@ let enabledChannels = {
 			"live": "carlson is live FeelsOkayMan 👉 "
 		},
 	},
-	//Normie streamers ResidentSleeper can't handle offlineOnly bots ResidentSleeper
-	/*"woops": {
-		"id": 38927816,
+	"cailighto": {
+		"id": 411543142,
 		"formats": {
-			"live": "live Champ 👉 ",
-			"offline": "stream offline FeelsGoodMan Clap 👉 ",
-			"title": "title has been changed ErynStaryn 👉 ",
-			"game": "game has been changed ErynStaryn 👉 ",
+			"live": "Required value 4Head "
 		},
-		"protection": {
-			"offlineOnly": true,
-			"noPingMode": true,
-			"disabledCommands": [
-                "debug"
-            ]
-		}
-	}*/
+	},
 
 	/*
     "randers00": {

@@ -37,7 +37,9 @@ const knownCommands = [
     quit,
     tcbquit,
 	notify,
-	dumpNotify];
+	dumpNotify,
+	dumpUser,
+	obfuscate];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -46,6 +48,24 @@ let currentData = {};
 //stores notifications for user
 let currentNotify = [];
 const invisibleAntiPingCharacter = "\u206D";
+
+async function dumpUser(channelName, context, params) {
+	if (!config.administrators.includes(context.username)) {
+        return;
+    }
+	for(let i=0;i<currentNotify.length;i++) {
+		if(currentNotify[i].notifyuser == params[0]) {
+			currentNotify.splice(i,1);
+		}
+	}
+	saveCurrentNotify();
+	await sendReply(channelName,context.username,"emptied the notify list for user " + params[0]);
+}
+
+async function obfuscate(channelName, context, params) {
+	let antiping = params[0].split('').join(invisibleAntiPingCharacter);
+	await sendReply(channelName,context.username,antiping);
+}
 
 async function notify(channelName, context, params) {
 	
@@ -73,6 +93,26 @@ async function notify(channelName, context, params) {
 	if(!(offlineChatOnly && currentData[channelName]["live"])) {
 		await sendReply(channelName,context["display-name"],`The user ${user} `+
 	`will get your message next time they type in chat ${message}`);
+	}
+}
+
+async function checkNotifies(channelName, user) {
+	
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	currentNotify.filter(onlyUnique);
+	if(!(offlineChatOnly && currentData[channelName]["live"])) {
+		for(let i=0;i<currentNotify.length;i++) {
+			if(currentNotify[i].notifyuser === user) {
+				sendReply(channelName,user,currentNotify[i].notifymessage);
+				currentNotify.splice(i,1);
+			}	
+		}
+		saveCurrentNotify();
 	}
 }
 
@@ -1183,22 +1223,9 @@ function onMessageHandler(target, context, msg, self) {
 	
 	// trim away the leading # character
     target = target.substring(1);
-	let channelData = config.enabledChannels[target];
-	let protection = channelData["protection"] || {};
-	let offlineChatOnly = protection["offlineOnly"];
-    if (typeof offlineChatOnly === "undefined") {
-        offlineChatOnly = false;
-    }
+	//Check CurrentNotifies array for messages to send
+	checkNotifies(target,context.username);
 	
-	if(!(offlineChatOnly && currentData[target]["live"])) {
-		for(let i=0;i<currentNotify.length;i++) {
-			if(currentNotify[i].notifyuser === context.username) {
-				sendReply(target,context.username,currentNotify[i].notifymessage);
-				currentNotify.splice(i,1);
-			}	
-		}
-		saveCurrentNotify();
-	}
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
         return;
