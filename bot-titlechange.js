@@ -50,16 +50,27 @@ let currentNotify = [];
 const invisibleAntiPingCharacter = "\u206D";
 
 async function dumpUser(channelName, context, params) {
+	let foundNotify = false;
+	let foundCount =0;
 	if (!config.administrators.includes(context.username)) {
         return;
     }
 	for(let i=0;i<currentNotify.length;i++) {
 		if(currentNotify[i].notifyuser == params[0]) {
 			currentNotify.splice(i,1);
+			foundNotify=true;
+			foundCount++;
+			i--;
 		}
 	}
 	saveCurrentNotify();
-	await sendReply(channelName,context.username,"emptied the notify list for user " + params[0]);
+	if(foundNotify) {
+		await sendReply(channelName,context.username,`emptied ${foundCount} ` +
+		`notifications from user: ${params[0]}`);
+	}
+	else {
+		await sendReply(channelName,context.username,"Found no notifications for the specified user: " + params[0]);
+	}
 }
 
 async function obfuscate(channelName, context, params) {
