@@ -39,7 +39,13 @@ const knownCommands = [
 	notify,
 	dumpNotify,
 	dumpUser,
-	obfuscate];
+	obfuscate,
+	disableUser,
+	removeDisabledUser,
+	disablePings,
+	reenablePings,
+	disablePinger,
+	reenablePinger];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -47,12 +53,168 @@ const knownCommands = [
 let currentData = {};
 //stores notifications for user
 let currentNotify = [];
+let fullyDisabledUsers = [];
+let disabledPingers = [];
+let disabledPingees = [];
+
 const invisibleAntiPingCharacter = "\u206D";
+
+async function disableUser(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	if(fullyDisabledUsers.includes(params[0])) {
+		await sendReply(channelName,context.username,`${params[0]} is already disabled`);
+		return;
+	}
+	fullyDisabledUsers.push(params[0]);
+	savefullyDisabledUsers();
+	await sendReply(channelName,context.username,`Disabled ${params[0]} from using ` +
+	`the bot`);
+}
+
+async function removeDisabledUser(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	let foundUser =false;
+	for(let i=0;i<fullyDisabledUsers.length;i++) {
+		if(fullyDisabledUsers[i] == params[0]) {
+			fullyDisabledUsers.splice(i,1);
+			foundUser=true;
+			i--;
+		}
+	}
+	savefullyDisabledUsers();
+	if(foundUser) {
+		await sendReply(channelName,context.username,`Re-enabled ${params[0]} to use ` +
+	`the bot`);
+	}
+	else {
+		await sendReply(channelName,context.username,`${params[0]} was not disabled`);
+	}
+}
+
+async function savefullyDisabledUsers() {
+    await storage.setItem('fullyDisabledUsers', fullyDisabledUsers);
+}
+
+async function loadfullyDisabledUsers() {
+    let loadedObj = await storage.getItem('fullyDisabledUsers');
+    if (typeof loadedObj !== "undefined") {
+        fullyDisabledUsers = loadedObj;
+    }
+}
+
+async function disablePings(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        if(typeof params[0] === "undefined") {
+			if(disabledPingees.includes(context.username)) {
+				await sendReply(channelName, context.username, "You are already disabled from recieving notifies");
+				return;
+			}
+			disabledPingees.push(context.username);
+			savedisabledPingees();
+			await sendReply(channelName, context.username, "Disabled you from recieving notifies");
+		}
+		return;
+    }
+	if(disabledPingees.includes(params[0])) {
+		await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
+		`from recieving notifies`);
+		return;
+	}	
+	disabledPingees.push(params[0]);
+	savedisabledPingees();
+	await sendReply(channelName,context.username,`Disabled ${params[0]} from ` +
+	`recieving notifies`);
+}
+
+async function reenablePings(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        await sendReply(channelName,context.username,"I'm lazy, just ask a bot mod 4Head");
+		return;
+    }
+	let foundUser=false;
+	for(let i=0;i<disabledPingees.length;i++) {
+		if(disabledPingees[i] == params[0]) {
+			disabledPingees.splice(i,1);
+			i--;
+			foundUser=true;
+		}
+	}
+	savedisabledPingees();
+	if(foundUser) {
+		await sendReply(channelName,context.username,`Re-enabled notifies for ${params[0]}`);
+	}
+	else {
+		await sendReply(channelName,context.username,`Notifies not disabled for ${params[0]}`);
+	}
+}
+
+async function savedisabledPingees() {
+    await storage.setItem('disabledPingees', disabledPingees);
+}
+
+async function loaddisabledPingees() {
+    let loadedObj = await storage.getItem('disabledPingees');
+    if (typeof loadedObj !== "undefined") {
+        disabledPingees = loadedObj;
+    }
+}
+
+async function disablePinger(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	
+	if(disabledPingers.includes(params[0])) {
+		await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
+		`from sending notifies`);
+		return;
+	}	
+	disabledPingers.push(params[0]);
+	savedisabledPingers();
+	await sendReply(channelName,context.username,`Disabled ${params[0]} from ` +
+	`sending notifies`);
+}
+
+async function reenablePinger(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	let foundUser=false;
+	for(let i=0;i<disabledPingers.length;i++) {
+		if(disabledPingers[i]==params[0]) {
+			disabledPingers.splice(i,1);
+			i--;
+			foundUser=true;
+		}
+	}
+	savedisabledPingers();
+	if(foundUser) {
+		await sendReply(channelName,context.username,`Re-enabled ${params[0]} to send notifies`);
+	}
+	else {
+		await sendReply(channelName,context.username,`${params[0]} is not disabled from sending notifies`);
+	}
+}
+
+async function savedisabledPingers() {
+    await storage.setItem('disabledPingers', disabledPingers);
+}
+
+async function loaddisabledPingers() {
+    let loadedObj = await storage.getItem('disabledPingers');
+    if (typeof loadedObj !== "undefined") {
+        disabledPingers = loadedObj;
+    }
+}
 
 async function dumpUser(channelName, context, params) {
 	let foundNotify = false;
 	let foundCount =0;
-	if (!config.administrators.includes(context.username)) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
         return;
     }
 	for(let i=0;i<currentNotify.length;i++) {
@@ -79,7 +241,13 @@ async function obfuscate(channelName, context, params) {
 }
 
 async function notify(channelName, context, params) {
-	
+	if(disabledPingers.includes(context.username)) {
+		return;
+	}
+	if(disabledPingees.includes(params[0])) {
+		await sendReply(channelName,context.username,`${params[0]} has notifies disabled`);
+		return;
+	}
 	if (params.length < 2) {
         await sendReply(channelName, context["display-name"], `You must specify a username and a message to notify`);
         return;
@@ -108,6 +276,9 @@ async function notify(channelName, context, params) {
 }
 
 async function checkNotifies(channelName, user) {
+	if (disabledPingees.includes(user)) {
+		return;
+	}
 	
 	let channelData = config.enabledChannels[channelName];
 	let protection = channelData["protection"] || {};
@@ -1204,6 +1375,9 @@ async function connect() {
     console.log("Loading from storage...");
     await loadUserSubscriptions();
 	await loadCurrentNotify();
+	await loadfullyDisabledUsers();
+	await loaddisabledPingees();
+	await loaddisabledPingers();
     await loadMotd();
     console.log("Connecting to Twitch IRC...");
     await client.connect();
@@ -1228,6 +1402,9 @@ function onMessageHandler(target, context, msg, self) {
     if (context['message-type'] === 'whisper') {
         return;
     }
+	if (fullyDisabledUsers.includes(context.username)) {
+		return;
+	}
 	
 	msg = msg.replace(endStripRegex, '');
     msg = msg.trim();
