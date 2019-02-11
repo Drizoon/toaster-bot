@@ -32,6 +32,11 @@ let administrators = [
     'niosver'
 ];
 
+let moderators = [
+	'drizoon',
+	'tree_house'
+];
+
 // The bot will post a "I am running"-style message to this channel on startup.
 const startupChannel = 'Niosver';
 
@@ -201,6 +206,7 @@ module.exports = {
     "commandPrefix": commandPrefix,
     "krakenClientId": krakenClientId,
     "administrators": administrators,
+	"moderators" : moderators,
     "startupChannel": startupChannel,
     "onlinePrintChannel": onlinePrintChannel,
     "modChannels": modChannels,
