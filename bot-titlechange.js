@@ -1496,7 +1496,7 @@ async function connect() {
 
 const endStripRegex = /[\s\u206D]+$/u;
 
-function onMessageHandler(target, context, msg, self) {
+async function onMessageHandler(target, context, msg, self) {
     if (self) {
         return;
     }
@@ -1514,8 +1514,8 @@ function onMessageHandler(target, context, msg, self) {
 	// trim away the leading # character
     target = target.substring(1);
 	//Check CurrentNotifies array for messages to send
-	checkNotifies(target,context.username);
-	checkAfk(target,context.username);
+	await checkNotifies(target,context.username);
+	await checkAfk(target,context.username);
 	
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
