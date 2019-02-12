@@ -91,7 +91,7 @@ async function checkAfk(channelName,user) {
 	await loadafkUsers();
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == user) {
-			await sendReply(channelName,user,`${user} is back: ` +
+			await sendMessage(channelName,`${user} is back: ` +
 			`${afkUsers[i].afkmessage}`);
 			afkUsers.splice(i,1);
 			saveafkUsers();
