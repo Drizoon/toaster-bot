@@ -45,7 +45,9 @@ const knownCommands = [
 	disablePings,
 	reenablePings,
 	disablePinger,
-	reenablePinger];
+	reenablePinger,
+	afk,
+	isAfk];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -63,11 +65,13 @@ let afkUsers = [];
 
 async function afk(channelName,context,params) {
 	let user = context.username;
-	let message = params.slice(1).join(" ")
+	let message = params.slice(0).join(" ");
+	
 	afkUsers.push({
         afkuser: user,
         afkmessage: message
     });
+	
 	saveafkUsers();
 	await sendReply(channelName,context.username,` is now afk: ${message}`);
 }
@@ -75,7 +79,7 @@ async function afk(channelName,context,params) {
 async function isAfk(channelName,context,params) {
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == params[0]) {
-			await sendReply(channelName,context.username,`${params[0]} is afk:` +
+			await sendReply(channelName,context.username,`${params[0]} is afk: ` +
 			`${afkUsers[i].afkmessage}`);
 			return;
 		}
@@ -84,13 +88,13 @@ async function isAfk(channelName,context,params) {
 }
 
 async function checkAfk(channelName,user) {
+	await loadafkUsers();
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == user) {
+			await sendReply(channelName,user,`${user} is back: ` +
+			`${afkUsers[i].afkmessage}`);
 			afkUsers.splice(i,1);
 			saveafkUsers();
-			await sendReply(channelName,user,`${user} is back:` +
-			`${afkUsers[i].afkmessage}`);
-			return;
 		}
 	}
 }
@@ -102,7 +106,7 @@ async function saveafkUsers() {
 async function loadafkUsers() {
     let loadedObj = await storage.getItem('afkUsers');
     if (typeof loadedObj !== "undefined") {
-        currentNotify = afkUsers;
+        afkUsers = loadedObj;
     }
 }
 
@@ -156,9 +160,11 @@ async function loadfullyDisabledUsers() {
 async function disablePings(channelName,context,params) {
 	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
         if(typeof params[0] === "undefined") {
-			if(disabledPingees.user.includes(context.username)) {
-				await sendReply(channelName, context.username, "You are already disabled from recieving notifies");
-				return;
+			for(let i=0;i<disabledPingees.length;i++) {
+				if(disabledPingees[i].user == context.username) {
+					await sendReply(channelName, context.username, "You are already disabled from recieving notifies");
+					return;
+				}
 			}
 			disabledPingees.push({
 				user: context.username,
@@ -169,11 +175,22 @@ async function disablePings(channelName,context,params) {
 		}
 		return;
     }
-	if(disabledPingees.user.includes(params[0])) {
-		await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
-		`from recieving notifies`);
+	for(let i=0;i<disabledPingees.length;i++) {
+		if(disabledPingees[i].user == params[0]) {
+			await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
+			`from recieving notifies`);
+			return;
+		}
+	}
+	if(typeof params[0] === "undefined") {
+		disabledPingees.push({
+			user: context.username,
+			disabledby: context.username
+		});
+		savedisabledPingees();
+		await sendReply(channelName, context.username, "Disabled you from recieving notifies");
 		return;
-	}	
+	}
 	disabledPingees.push({
 		user: params[0],
 		disabledby: context.username
@@ -201,6 +218,23 @@ async function reenablePings(channelName,context,params) {
 		else {
 			await sendReply(channelName,context.username,`Notifies not disabled for you`);
 		}
+	}
+	if(typeof params[0]==="undefined") {
+		for(let i=0;i<disabledPingees.length;i++) {
+			if(disabledPingees[i].user == context.username) {
+				disabledPingees.splice(i,1);
+				i--;
+				foundUser=true;
+			}
+		}
+		savedisabledPingees();
+		if(foundUser) {
+			await sendReply(channelName,context.username,`Re-enabled notifies for you`);
+		}
+		else {
+			await sendReply(channelName,context.username,`Notifies not disabled for you`);
+		}
+		return;
 	}
 	
 	for(let i=0;i<disabledPingees.length;i++) {
