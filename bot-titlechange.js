@@ -29,13 +29,10 @@ const knownCommands = [
     help,
     bot,
     ping,
-    tcbping,
     setData,
     debugData,
     debug,
-    tcbdebug,
     quit,
-    tcbquit,
 	notify,
 	dumpNotify,
 	dumpUser,
@@ -47,7 +44,9 @@ const knownCommands = [
 	disablePinger,
 	reenablePinger,
 	afk,
-	isAfk];
+	isAfk,
+	notifyhelp,
+	cookie];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -58,11 +57,42 @@ let currentNotify = [];
 let fullyDisabledUsers = [];
 let disabledPingers = [];
 let disabledPingees = [];
+let afkUsers = [];
 
 const invisibleAntiPingCharacter = "\u206D";
 
-let afkUsers = [];
+async function cookie(channelName,context,params) {
+	let options = {
+        method: 'GET',
+        json: true,
+        uri: 'http://yerkee.com/api/fortune/wisdom',
+    };
 
+    try {
+        let response = await request(options);
+		let message = response["fortune"];
+		let foundDash=0;
+		let i=0;
+		while(i<message.length && foundDash<2) { //test --test
+			if(message[i]=="-") {
+				foundDash++;
+			}
+			i++;
+		}
+		if(foundDash>=2) {
+			message = message.substring(0,i-3);
+		}
+        await sendReply(channelName,context.username,message);
+
+    } catch (error) {
+        console.log(error);
+		await sendReply(channelName,context.username,"Error connecting to the api monkaS ");
+    }
+}
+
+async function notifyhelp(channelName,context,params) {
+	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp ðŸ‘‰ https://github.com/Niosver/yoinkedtitlechange-bot");
+}
 async function afk(channelName,context,params) {
 	let user = context.username;
 	let message = params.slice(0).join(" ");
