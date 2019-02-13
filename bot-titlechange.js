@@ -176,7 +176,7 @@ async function disablePings(channelName,context,params) {
 		return;
     }
 	for(let i=0;i<disabledPingees.length;i++) {
-		if(disabledPingees[i].user == params[0]) {
+		if(disabledPingees[i].user == params[0].toLowerCase()) {
 			await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
 			`from recieving notifies`);
 			return;
@@ -192,7 +192,7 @@ async function disablePings(channelName,context,params) {
 		return;
 	}
 	disabledPingees.push({
-		user: params[0],
+		user: params[0].toLowerCase(),
 		disabledby: context.username
 	});
 	savedisabledPingees();
@@ -204,7 +204,7 @@ async function reenablePings(channelName,context,params) {
 	let foundUser=false;
 	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
 		for(let i=0;i<disabledPingees.length;i++) {
-			if(disabledPingees[i].user == params[0]) {
+			if(disabledPingees[i].user == context.username) {
 				if(disabledPingees[i].disabledby == context.username) {
 					disabledPingees.splice(i,1);
 					i--;
@@ -238,7 +238,7 @@ async function reenablePings(channelName,context,params) {
 	}
 	
 	for(let i=0;i<disabledPingees.length;i++) {
-		if(disabledPingees[i].user == params[0]) {
+		if(disabledPingees[i].user == params[0].toLowerCase()) {
 			disabledPingees.splice(i,1);
 			i--;
 			foundUser=true;
@@ -269,12 +269,12 @@ async function disablePinger(channelName,context,params) {
         return;
     }
 	
-	if(disabledPingers.includes(params[0])) {
+	if(disabledPingers.includes(params[0].toLowerCase())) {
 		await sendReply(channelName,context.username,`${params[0]} is already disabled ` +
 		`from sending notifies`);
 		return;
 	}	
-	disabledPingers.push(params[0]);
+	disabledPingers.push(params[0].toLowerCase());
 	savedisabledPingers();
 	await sendReply(channelName,context.username,`Disabled ${params[0]} from ` +
 	`sending notifies`);
@@ -286,7 +286,7 @@ async function reenablePinger(channelName,context,params) {
     }
 	let foundUser=false;
 	for(let i=0;i<disabledPingers.length;i++) {
-		if(disabledPingers[i]==params[0]) {
+		if(disabledPingers[i]==params[0].toLowerCase()) {
 			disabledPingers.splice(i,1);
 			i--;
 			foundUser=true;
@@ -319,7 +319,7 @@ async function dumpUser(channelName, context, params) {
         return;
     }
 	for(let i=0;i<currentNotify.length;i++) {
-		if(currentNotify[i].notifyuser == params[0]) {
+		if(currentNotify[i].notifyuser == params[0].toLowerCase()) {
 			currentNotify.splice(i,1);
 			foundNotify=true;
 			foundCount++;
@@ -345,9 +345,11 @@ async function notify(channelName, context, params) {
 	if(disabledPingers.includes(context.username)) {
 		return;
 	}
-	if(disabledPingees.includes(params[0])) {
-		await sendReply(channelName,context.username,`${params[0]} has notifies disabled`);
-		return;
+	for(let i=0;i<disabledPingees.length;i++) {
+		if(disabledPingees[i].user == params[0].toLowerCase()) {
+			await sendReply(channelName,context.username,`${params[0]} has notifies disabled`);
+			return;
+		}
 	}
 	if (params.length < 2) {
         await sendReply(channelName, context["display-name"], `You must specify a username and a message to notify`);
@@ -377,8 +379,10 @@ async function notify(channelName, context, params) {
 }
 
 async function checkNotifies(channelName, user) {
-	if (disabledPingees.includes(user)) {
-		return;
+	for(let i=0;i<disabledPingees.length;i++) {
+		if(disabledPingees[i].user == params[0].toLowerCase()) {
+			return;
+		}
 	}
 	
 	let channelData = config.enabledChannels[channelName];
