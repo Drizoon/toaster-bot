@@ -380,7 +380,7 @@ async function notify(channelName, context, params) {
 
 async function checkNotifies(channelName, user) {
 	for(let i=0;i<disabledPingees.length;i++) {
-		if(disabledPingees[i].user == params[0].toLowerCase()) {
+		if(disabledPingees[i].user == user) {
 			return;
 		}
 	}
