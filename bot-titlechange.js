@@ -91,7 +91,7 @@ async function cookie(channelName,context,params) {
 }
 
 async function notifyhelp(channelName,context,params) {
-	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp ðŸ‘‰ https://github.com/Niosver/yoinkedtitlechange-bot");
+	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp https://github.com/Niosver/yoinkedtitlechange-bot");
 }
 async function afk(channelName,context,params) {
 	let user = context.username;
