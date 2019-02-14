@@ -6,7 +6,7 @@ Command Prefix: $
 
 ## Commands everyone can use
 
-	*if it is not disabled on a channel by channel basis*
+	_if it is not disabled on a channel by channel basis_
 	*only commands I have added not those from Randers00
 
 
