@@ -16,7 +16,8 @@ const opts = {
         '#bananabrea',
 		'#vincie',
 		'#carlson5233',
-		'#cailighto'/**/
+		'#cailighto',
+		'#pokelawls'/**/
     ]
 };
 
@@ -34,7 +35,8 @@ let administrators = [
 
 let moderators = [
 	'drizoon',
-	'tree_house'
+	'tree_house',
+	'trixplays'
 ];
 
 // The bot will post a "I am running"-style message to this channel on startup.
@@ -116,6 +118,19 @@ let enabledChannels = {
 		"formats": {
 			"live": "Required value 4Head "
 		},
+	},
+	"pokelawls": {
+		"id": 12943173,
+		"formats": {
+			"live": "Required value 4Head "
+		},
+		"protection": {
+            "offlineOnly": true,
+			"disabledCommands": [
+                "debug",
+				"cookie"
+            ]
+        }
 	},
 
 	/*
