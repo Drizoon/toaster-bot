@@ -9,7 +9,7 @@ Command Prefix: $
 *if it is not disabled on a channel by channel basis
 *only commands I have added not those from Randers00
 
-**notify <user> <message>
+**notify <user> <message>**
   	Store a message to send to <user> next time they type in any of the connected chats
    	*<message> may not be null*
 	
@@ -19,7 +19,7 @@ Command Prefix: $
 	the bot from sending you any already saved messages.
 
 
-**afk <message>
+**afk <message>**
 	Sets you to afk with specific message, this message is retrieved when someone uses the isAfk command
 	or the next time you type in a connected chats
 	
