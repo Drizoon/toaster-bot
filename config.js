@@ -129,7 +129,8 @@ let enabledChannels = {
             "offlineOnly": true,
 			"disabledCommands": [
                 "debug",
-				"cookie"
+				"cookie",
+				"ping"
             ]
         }
 	},
