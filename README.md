@@ -11,7 +11,7 @@ Command Prefix: $
 
 **notify [user] [message]**<br/>
   	Store a message to send to <user> next time they type in any of the connected chats
-   	*<message> may not be null*
+   	*[message] may not be null*
 	
 
 **disablePings**<br/>
@@ -37,7 +37,7 @@ Command Prefix: $
 
 	
 **dumpUser [user]**<br/>
-	Empty the array of all messages for <user>
+	Empty the array of all messages for [user]
 	
 	
 **disableUser [user]**<br/>
