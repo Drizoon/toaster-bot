@@ -10,7 +10,7 @@ Command Prefix: $
 *only commands I have added not those from Randers00*<br/>
 
 **notify [user] [message]**<br/>
-  	Store a message to send to <user> next time they type in any of the connected chats
+  	Store a message to send to <user> next time they type in any of the connected chats<br/>
    	*[message] may not be null*
 	
 
