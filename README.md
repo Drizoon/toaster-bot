@@ -34,7 +34,7 @@ Command Prefix: $
 	
 	
 
-##Bot Mod Only Commands##
+###Bot Mod Only Commands###
 
 	
 	
