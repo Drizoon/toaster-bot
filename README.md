@@ -4,7 +4,7 @@ Taken from Randers00 titlechange-bot for use in my own channels FeelsOkayMan
 
 Command Prefix: $
 
-## Commands everyone can use ##
+## Commands everyone can use
 
 	*if it is not disabled on a channel by channel basis*
 	*only commands I have added not those from Randers00
@@ -34,7 +34,7 @@ Command Prefix: $
 	
 	
 
-###Bot Mod Only Commands###
+###Bot Mod Only Commands
 
 	
 	
