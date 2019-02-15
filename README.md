@@ -32,6 +32,13 @@ Command Prefix: $
 	Gives you a random fortune FeelsOkayMan
 	
 	
+**disablePings**<br/>
+	Disables you from recieving messages sent by other users
+	
+**reenablePings**<br/>
+	Re-enables you to recieve messages sent by other users
+	
+	
 
 ## Bot Mod Only Commands
 
