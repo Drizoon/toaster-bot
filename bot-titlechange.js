@@ -1208,7 +1208,7 @@ async function help(channelName, context, params) {
     }
 
     await sendReply(channelName, context["display-name"], "Available commands: $notifyme <event> [optional value], " +
-        "$removeme <event> [optional value], $subscribed, $events, $title, $game, $islive, $help");
+        "$removeme <event> [optional value], $subscribed, $events, $title, $game, $islive. $notifyhelp for notify commands");
 }
 
 async function titlechangebot_help(channelName, context, params) {
