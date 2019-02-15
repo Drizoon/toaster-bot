@@ -290,6 +290,7 @@ async function reenablePings(channelName,context,params) {
 		else {
 			await sendReply(channelName,context.username,`Notifies not disabled for you`);
 		}
+		return;
 	}
 	if(typeof params[0]==="undefined") {
 		for(let i=0;i<disabledPingees.length;i++) {
