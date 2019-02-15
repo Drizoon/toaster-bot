@@ -144,11 +144,11 @@ async function disableUser(channelName,context,params) {
 	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
         return;
     }
-	if(fullyDisabledUsers.includes(params[0])) {
+	if(fullyDisabledUsers.includes(params[0].toLowerCase())) {
 		await sendReply(channelName,context.username,`${params[0]} is already disabled`);
 		return;
 	}
-	fullyDisabledUsers.push(params[0]);
+	fullyDisabledUsers.push(params[0].toLowerCase());
 	savefullyDisabledUsers();
 	await sendReply(channelName,context.username,`Disabled ${params[0]} from using ` +
 	`the bot`);
