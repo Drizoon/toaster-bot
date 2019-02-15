@@ -37,7 +37,8 @@ let moderators = [
 	'drizoon',
 	'tree_house',
 	'trixplays',
-	'bada_22'
+	'bada_22',
+	'juanmaa'
 ];
 
 // The bot will post a "I am running"-style message to this channel on startup.
