@@ -7,7 +7,7 @@ const opts = {
         secure: true
     },
     identity: {
-        username: 'I_yoinked_this_bot',
+        username: 'Best_Toaster',
         password: secrets.ircPassword
     },
     channels: [
@@ -16,8 +16,7 @@ const opts = {
         '#bananabrea',
 		'#vincie',
 		'#carlson5233',
-		'#cailighto',
-		'#pokelawls'/**/
+		'#cailighto'/**/
     ]
 };
 
@@ -120,20 +119,6 @@ let enabledChannels = {
 		"formats": {
 			"live": "Required value 4Head "
 		},
-	},
-	"pokelawls": {
-		"id": 12943173,
-		"formats": {
-			"live": "Required value 4Head "
-		},
-		"protection": {
-            "offlineOnly": true,
-			"disabledCommands": [
-                "debug",
-				"cookie",
-				"ping"
-            ]
-        }
 	},
 
 	/*
