@@ -62,6 +62,16 @@ let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
 
 async function cookie(channelName,context,params) {
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
+	
 	let options = {
         method: 'GET',
         json: true,
@@ -94,6 +104,17 @@ async function notifyhelp(channelName,context,params) {
 	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp https://github.com/Niosver/yoinkedtitlechange-bot");
 }
 async function afk(channelName,context,params) {
+	
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
+	
 	let user = context.username;
 	let message = params.slice(0).join(" ");
 	
@@ -107,6 +128,16 @@ async function afk(channelName,context,params) {
 }
 
 async function isAfk(channelName,context,params) {
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
+	
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == params[0]) {
 			await sendReply(channelName,context.username,`${params[0]} is afk: ` +
@@ -118,6 +149,17 @@ async function isAfk(channelName,context,params) {
 }
 
 async function checkAfk(channelName,user) {
+	
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
+	
 	await loadafkUsers();
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == user) {
