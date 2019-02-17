@@ -46,7 +46,8 @@ const knownCommands = [
 	afk,
 	isAfk,
 	notifyhelp,
-	cookie];
+	cookie,
+	percent];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -60,6 +61,39 @@ let disabledPingees = [];
 let afkUsers = [];
 
 const invisibleAntiPingCharacter = "\u206D";
+
+async function percent(channelName,context,params) {
+	let foundIs=false;
+	let foundAre=false;
+	let i=0;
+	while(i<params.length && !foundIs && !foundAre) {
+		let word = params[i].toLowerCase();
+		if(word=="is") {
+			foundIs=true;
+			i--;
+		}
+		if(word=="are") {
+			foundAre=true;
+			i--;
+		}
+		i++;
+	}
+	let randomNumber = Math.floor(Math.random() * 101);
+	if(foundIs) {
+		let beginning = params.slice(0,i).join(" ");
+		let message = params.slice(i+1).join(" ");
+		await sendMessage(channelName,`${beginning} is ${randomNumber}% ${message}`);
+		return;
+	}
+	if(foundAre) {
+		let beginning = params.slice(0,i).join(" ");
+		let message = params.slice(i+1).join(" ");
+		await sendMessage(channelName,`${beginning} are ${randomNumber}% ${message}`);
+		return;
+	}
+	let message = params.slice(0).join(" ");
+	await sendMessage(channelName,`% ${message} : ${randomNumber}%`);
+}
 
 async function cookie(channelName,context,params) {
 	let channelData = config.enabledChannels[channelName];
