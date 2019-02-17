@@ -75,7 +75,7 @@ async function cookie(channelName,context,params) {
 	let options = {
         method: 'GET',
         json: true,
-        uri: 'http://yerkee.com/api/fortune/platitudes',
+        uri: 'http://yerkee.com/api/fortune/all',
     };
 
     try {
