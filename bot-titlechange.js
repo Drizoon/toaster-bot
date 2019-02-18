@@ -47,7 +47,8 @@ const knownCommands = [
 	isAfk,
 	notifyhelp,
 	cookie,
-	percent];
+	percent,
+	eightball];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -61,7 +62,37 @@ let disabledPingees = [];
 let afkUsers = [];
 
 const invisibleAntiPingCharacter = "\u206D";
+async function eightball(channelName,context,params) {
+	let question = encodeURIComponent(params.slice(0).join(" "));
+	let options = {
+        method: 'GET',
+        json: true,
+        uri: 'https://8ball.delegator.com/magic/JSON/'+question,
+    };
 
+    try {
+        let response = await request(options);
+		let message = response["magic"]["answer"];
+		let type = response["magic"]["type"];
+		if(type == "Neutral") {
+			await sendReply(channelName,context.username,message+" FeelsDankMan");
+		}
+		else if(type == "Affirmative"){
+			await sendReply(channelName,context.username,message+" FeelsGoodMan");
+		}
+		else if(type=="Contrary"){
+			await sendReply(channelName,context.username,message+" FeelsBadMan");
+		}
+		else {
+			await sendReply(channelName,context.username,message);
+		}
+	}
+	catch (error) {
+        console.log(error);
+		await sendReply(channelName,context.username,"Error connecting to the api monkaS ");
+    }
+	
+}
 async function percent(channelName,context,params) {
 	let foundIs=false;
 	let foundAre=false;
@@ -1627,7 +1658,12 @@ async function onMessageHandler(target, context, msg, self) {
 	//Check CurrentNotifies array for messages to send
 	await checkNotifies(target,context.username);
 	await checkAfk(target,context.username);
-	
+	if(msg.substr(0,1) == "%") {
+		await percent(target,context,msg.slice(1).split(' ').splice(1));
+	}
+	if(msg.substr(0,6) =="$8ball") {
+		await eightball(target,context,msg.slice(1).split(' ').splice(1));
+	}
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
         return;
