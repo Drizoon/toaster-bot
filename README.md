@@ -1,4 +1,4 @@
-# yoinkedtitlechange-bot
+# Best Toaster
 
 Taken from Randers00 titlechange-bot for use in my own channels FeelsOkayMan
 
