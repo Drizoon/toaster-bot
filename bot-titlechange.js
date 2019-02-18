@@ -60,8 +60,11 @@ let fullyDisabledUsers = [];
 let disabledPingers = [];
 let disabledPingees = [];
 let afkUsers = [];
-
 const invisibleAntiPingCharacter = "\u206D";
+
+let positiveEmotes =["FeelsGoodMan","FeelsOkayMan","peepoHappy","widepeepoPog","PagChomp","OkayChamp","HYPERS","PepoCheer"];
+let neutralEmotes = ["FeelsDankMan","MEGADANK","eShrug","Jebaited","monkaHmm","Pepega","peepoDetective","4HEad"];
+let negativeEmotes=["FeelsBadMan","pepoGo","peepoSad","WeirdChampo","FeelsStrongMan","PeepoWeird","PepeHands","BibleThump"];
 async function eightball(channelName,context,params) {
 	let question = encodeURIComponent(params.slice(0).join(" "));
 	let options = {
@@ -74,14 +77,15 @@ async function eightball(channelName,context,params) {
         let response = await request(options);
 		let message = response["magic"]["answer"];
 		let type = response["magic"]["type"];
+		let randomNumber = Math.floor(Math.random() * 9);
 		if(type == "Neutral") {
-			await sendReply(channelName,context.username,message+" FeelsDankMan");
+			await sendReply(channelName,context.username,message+ " " + neutralEmotes[randomNumber]);
 		}
 		else if(type == "Affirmative"){
-			await sendReply(channelName,context.username,message+" FeelsGoodMan");
+			await sendReply(channelName,context.username,message+ " " + positiveEmotes[randomNumber]);
 		}
 		else if(type=="Contrary"){
-			await sendReply(channelName,context.username,message+" FeelsBadMan");
+			await sendReply(channelName,context.username,message+ " " + negativeEmotes[randomNumber]);
 		}
 		else {
 			await sendReply(channelName,context.username,message);
