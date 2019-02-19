@@ -498,6 +498,9 @@ async function notify(channelName, context, params) {
         return;
     }
 	let user = params[0].toLowerCase();
+	if(user.charAt(0)=='@') {
+		user =user.substring(1);
+	}
 	let pinger = context.username.split('').join(invisibleAntiPingCharacter);
 	let message = pinger + " : " + params.slice(1).join(" ");
 	
