@@ -48,7 +48,8 @@ const knownCommands = [
 	notifyhelp,
 	cookie,
 	percent,
-	eightball];
+	eightball,
+	stocks];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -61,6 +62,42 @@ let disabledPingers = [];
 let disabledPingees = [];
 let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
+
+async function stocks(channelName,context,params) {
+	let foundStock=false;
+	let i=0;
+	
+	let options = {
+		mothod: 'GET',
+		json:true,
+		uri: 'https://api.twitchstocks.com/api/v1/stocks',
+	};
+	
+	try {
+		let response = await request(options);
+		let stocks=response["data"]["stocks"];
+		while(!foundStock && i<stocks.length) {
+			if(params[0].toLowerCase() == stocks[i].name.toLowerCase()) {
+				console.log(`${i}`);
+				foundStock=true;
+				let hourlyChange = Number(Math.round(((stocks[i].change1hr-stocks[i].price)/stocks[i].price)+'e5')+'e-5').toFixed(5);
+				let dailyChange = Number(Math.round(((stocks[i].change24hr-stocks[i].price)/stocks[i].price)+'e5')+'e-5').toFixed(5);
+				
+				await sendMessage(channelName,`${stocks[i].name} : ${stocks[i].symbol.toUpperCase()}` + "\u000D" +
+				`(1Hr): ${hourlyChange}`+"\u000D"+ `(1Day): ${dailyChange}`);
+			}
+			i++;
+		}
+		if(!foundStock) {
+			await sendMessage(channelName, "Unable to find streamer monkaS");
+		}
+		
+	}catch (error) {
+        console.log(error);
+		await sendReply(channelName,context.username,"Error connecting to the api monkaS ");
+    }
+	
+}
 
 let positiveEmotes =["FeelsGoodMan","FeelsOkayMan","peepoHappy","widepeepoPog","PagChomp","OkayChamp","HYPERS","PepoCheer"];
 let neutralEmotes = ["FeelsDankMan","MEGADANK","eShrug","Jebaited","monkaHmm","Pepega","peepoDetective","4HEad"];
