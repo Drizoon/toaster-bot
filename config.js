@@ -29,7 +29,8 @@ const krakenClientId = secrets.krakenClientId;
 // list of users with superuser privileges. Use with extreme caution, since
 // these users have access to arbitrary code execution with !debug
 let administrators = [
-    'niosver'
+    'niosver',
+	'cailighto'
 ];
 
 let moderators = [
