@@ -534,12 +534,27 @@ async function notify(channelName, context, params) {
         await sendReply(channelName, context["display-name"], `You must specify a username and a message to notify`);
         return;
     }
-	let user = params[0].toLowerCase();
-	if(user.charAt(0)=='@') {
-		user =user.substring(1);
+	if(params[0].toLowerCase()=="silent") {
+		console.log("Kappa1");
+		if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+			console.log("Kappa2");
+			return;
+		}
+		console.log("Kappa3");
+		var user = params[1].toLowerCase();
+		if(user.charAt(0)=='@') {
+			user =user.substring(1);
+		}
+		var message = params.slice(2).join(" ");
 	}
-	let pinger = context.username.split('').join(invisibleAntiPingCharacter);
-	let message = pinger + " : " + params.slice(1).join(" ");
+	else {
+		var user = params[0].toLowerCase();
+		if(user.charAt(0)=='@') {
+			user =user.substring(1);
+		}
+		let pinger = context.username.split('').join(invisibleAntiPingCharacter);
+		var message = pinger + " : " + params.slice(1).join(" ");
+	}
 	
 	currentNotify.push({
         notifyuser: user,
