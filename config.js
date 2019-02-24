@@ -42,7 +42,7 @@ let moderators = [
 ];
 
 // The bot will post a "I am running"-style message to this channel on startup.
-const startupChannel = 'Niosver';
+const startupChannel = 'cailighto';
 
 // if a channel is offline-only protected, and a change occurs, the bot prints
 // to this channel instead of the channel the change occurred in.
