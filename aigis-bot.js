@@ -78,7 +78,6 @@ async function stocks(channelName,context,params) {
 		let stocks=response["data"]["stocks"];
 		while(!foundStock && i<stocks.length) {
 			if(params[0].toLowerCase() == stocks[i].name.toLowerCase()) {
-				console.log(`${i}`);
 				foundStock=true;
 				let hourlyChange = Number(Math.round(((stocks[i].change1hr-stocks[i].price)/stocks[i].price)+'e5')+'e-5').toFixed(5);
 				let dailyChange = Number(Math.round(((stocks[i].change24hr-stocks[i].price)/stocks[i].price)+'e5')+'e-5').toFixed(5);
@@ -535,12 +534,9 @@ async function notify(channelName, context, params) {
         return;
     }
 	if(params[0].toLowerCase()=="silent") {
-		console.log("Kappa1");
 		if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
-			console.log("Kappa2");
 			return;
 		}
-		console.log("Kappa3");
 		var user = params[1].toLowerCase();
 		if(user.charAt(0)=='@') {
 			user =user.substring(1);
@@ -588,15 +584,39 @@ async function checkNotifies(channelName, user) {
     if (typeof offlineChatOnly === "undefined") {
         offlineChatOnly = false;
     }
+	let msgsToPrint =[];
+	let msgToPrint ="";
+	let firstMessage=true;
 	currentNotify.filter(onlyUnique);
 	if(!(offlineChatOnly && currentData[channelName]["live"])) {
 		for(let i=0;i<currentNotify.length;i++) {
+			console.log(`${i} : ${currentNotify.length}`);
 			if(currentNotify[i].notifyuser === user) {
-				sendReply(channelName,user,currentNotify[i].notifymessage);
+				let thisIterationMessage = currentNotify[i].notifymessage
 				currentNotify.splice(i,1);
+				i--;
+				if(firstMessage) {
+					msgToPrint=thisIterationMessage;
+					firstMessage=false;
+				}
+				else {
+					if(msgToPrint.length+thisIterationMessage.length<450) {
+						msgToPrint=msgToPrint + " / " + thisIterationMessage;
+					}
+					else {
+						msgsToPrint.push(msgToPrint);
+						msgToPrint=thisIterationMessage;
+					}
+				}
 			}	
 		}
+		if(msgToPrint.length>0) {
+			msgsToPrint.push(msgToPrint);
+		}
 		saveCurrentNotify();
+		for(let k=0;k<msgsToPrint.length;k++) {
+			await sendReply(channelName,user,msgsToPrint[k]);
+		}
 	}
 }
 
@@ -617,7 +637,7 @@ async function dumpNotify(channelName,context) {
     }
 	currentNotify.length=0;
 	saveCurrentNotify();
-	await sendReply(channelName,context.username,`${context.username}` +
+	await sendMessage(channelName,`${context.username}` +
 	` emptied the notify list`);
 }
 // only the events that have a configured format are supported by a channel.
@@ -1335,21 +1355,6 @@ async function help(channelName, context, params) {
         "$removeme <event> [optional value], $subscribed, $events, $title, $game, $islive. $notifyhelp for notify commands");
 }
 
-async function titlechangebot_help(channelName, context, params) {
-    await help(channelName, context, params);
-}
-
-async function titlechangebothelp(channelName, context, params) {
-    await help(channelName, context, params);
-}
-
-async function tcb_help(channelName, context, params) {
-    await help(channelName, context, params);
-}
-
-async function tcbhelp(channelName, context, params) {
-    await help(channelName, context, params);
-}
 
 async function bot(channelName, context, params) {
 
@@ -1361,20 +1366,10 @@ async function bot(channelName, context, params) {
     await sendReply(channelName, context["display-name"], "I can notify you when the channel goes live or the title changes. Try $help for a list of commands. MEGADANK");
 }
 
-async function titlechange_bot(channelName, context, params) {
-    await bot(channelName, context, params);
-}
 
-async function titlechangebot(channelName, context, params) {
-    await bot(channelName, context, params);
-}
 
 async function ping(channelName, context, params) {
     await sendReply(channelName, context["display-name"], "Reporting for duty NaM 7");
-}
-
-async function tcbping(channelName, context, params) {
-    await ping(channelName, context, params);
 }
 
 async function setData(channelName, context, params) {
@@ -1433,10 +1428,6 @@ async function debug(channelName, context, params) {
     }
 }
 
-async function tcbdebug(channelName, context, params) {
-    await debug(channelName, context, params);
-}
-
 async function quit(channelName, context, params) {
 
     if (!config.administrators.includes(context["username"])) {
@@ -1446,10 +1437,6 @@ async function quit(channelName, context, params) {
     await sendReply(channelName, context["display-name"], "Quitting/restarting...");
     process.exit(1);
 
-}
-
-async function tcbquit(channelName, context, params) {
-    await quit(channelName, context, params);
 }
 
 const pajbotLinkRegex = new RegExp("\\(?(?:(http|https):\\/\\/)?(?:((?:[^\\W\\s]|\\.|-|[:]{1})+)@{1})?" +
@@ -1715,8 +1702,9 @@ async function onMessageHandler(target, context, msg, self) {
 	// trim away the leading # character
     target = target.substring(1);
 	//Check CurrentNotifies array for messages to send
-	await checkNotifies(target,context.username);
-	await checkAfk(target,context.username);
+	checkNotifies(target,context.username);
+	checkAfk(target,context.username);
+	
 	if(msg.substr(0,1) == "%") {
 		await percent(target,context,msg.slice(1).split(' ').splice(1));
 	}
