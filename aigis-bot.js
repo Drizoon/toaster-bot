@@ -1701,7 +1701,7 @@ async function onMessageHandler(target, context, msg, self) {
 	
 	// trim away the leading # character
     target = target.substring(1);
-	if(msg.includes("uwu") {
+	if(msg.includes("uwu")) {
 		await sendReply(target,context.username,"https://i.imgur.com/xUI8B9O.jpg");
 	}
 	//Check CurrentNotifies array for messages to send
