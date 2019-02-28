@@ -7,6 +7,7 @@ const AsyncLock = require('node-async-locks').AsyncLock;
 const escapeStringRegexp = require('escape-string-regexp');
 const Timer = require('./edit-timer').Timer;
 const config = require('./config');
+var moment = require('moment');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -222,14 +223,15 @@ async function afk(channelName,context,params) {
 	
 	let user = context.username;
 	let message = params.slice(0).join(" ");
-	
+	var time = moment();
 	afkUsers.push({
         afkuser: user,
-        afkmessage: message
+        afkmessage: message,
+		afkat: time
     });
 	
 	saveafkUsers();
-	await sendReply(channelName,context.username,` is now afk: ${message}`);
+	await sendMessage(channelName,` ${context.username} is now afk: ${message}`);
 }
 
 async function isAfk(channelName,context,params) {
@@ -246,7 +248,7 @@ async function isAfk(channelName,context,params) {
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == params[0]) {
 			await sendReply(channelName,context.username,`${params[0]} is afk: ` +
-			`${afkUsers[i].afkmessage}`);
+			`${afkUsers[i].afkmessage}` + ` (${moment().from(afkUsers[i].time)})`);
 			return;
 		}
 	}
@@ -269,7 +271,7 @@ async function checkAfk(channelName,user) {
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == user) {
 			await sendMessage(channelName,`${user} is back: ` +
-			`${afkUsers[i].afkmessage}`);
+			`${afkUsers[i].afkmessage}`+ ` (${moment().from(afkUsers[i].time)})`);
 			afkUsers.splice(i,1);
 			saveafkUsers();
 		}
@@ -551,10 +553,11 @@ async function notify(channelName, context, params) {
 		let pinger = context.username.split('').join(invisibleAntiPingCharacter);
 		var message = pinger + " : " + params.slice(1).join(" ");
 	}
-	
+	var time=moment();
 	currentNotify.push({
         notifyuser: user,
-        notifymessage: message
+        notifymessage: message,
+		notifytime: time
     });
 	
 	saveCurrentNotify();
@@ -590,9 +593,8 @@ async function checkNotifies(channelName, user) {
 	currentNotify.filter(onlyUnique);
 	if(!(offlineChatOnly && currentData[channelName]["live"])) {
 		for(let i=0;i<currentNotify.length;i++) {
-			console.log(`${i} : ${currentNotify.length}`);
 			if(currentNotify[i].notifyuser === user) {
-				let thisIterationMessage = currentNotify[i].notifymessage
+				let thisIterationMessage = currentNotify[i].notifymessage+ ` (${moment().from(currentNotify[i].time)})`;
 				currentNotify.splice(i,1);
 				i--;
 				if(firstMessage) {
@@ -1684,7 +1686,7 @@ async function connect() {
 
 const endStripRegex = /[\s\u206D]+$/u;
 
-async function onMessageHandler(target, context, msg, self) {
+function onMessageHandler(target, context, msg, self) {
     if (self) {
         return;
     }
@@ -1702,17 +1704,17 @@ async function onMessageHandler(target, context, msg, self) {
 	// trim away the leading # character
     target = target.substring(1);
 	if(msg.includes("uwu")) {
-		await sendReply(target,context.username,"https://i.imgur.com/xUI8B9O.jpg");
+		sendReply(target,context.username,"https://i.imgur.com/xUI8B9O.jpg");
 	}
 	//Check CurrentNotifies array for messages to send
 	checkNotifies(target,context.username);
 	checkAfk(target,context.username);
 	
 	if(msg.substr(0,1) == "%") {
-		await percent(target,context,msg.slice(1).split(' ').splice(1));
+		percent(target,context,msg.slice(1).split(' ').splice(1));
 	}
 	if(msg.substr(0,6) =="$8ball") {
-		await eightball(target,context,msg.slice(1).split(' ').splice(1));
+		eightball(target,context,msg.slice(1).split(' ').splice(1));
 	}
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
@@ -1740,11 +1742,12 @@ async function onMessageHandler(target, context, msg, self) {
                 );
                 continue;
             }
-
-            knownCommands[i](target, context, params);
-            console.log(
-                `* Executed ${commandName} command for ${context.username}`
-            );
+			setTimeout(function() {
+				knownCommands[i](target, context, params);
+				console.log(
+					`* Executed ${commandName} command for ${context.username}`
+				);
+			},500);
         }
     }
 	
