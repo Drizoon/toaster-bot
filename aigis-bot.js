@@ -238,7 +238,7 @@ async function afk(channelName,context,params) {
 	
 	let user = context.username;
 	let message = params.slice(0).join(" ");
-	var time = moment();
+	var time = moment().toObject();
 	afkUsers.push({
         afkuser: user,
         afkmessage: message,
@@ -262,8 +262,9 @@ async function isAfk(channelName,context,params) {
 	
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == params[0]) {
+			console.log(`${afkUsers[i].time}`);
 			await sendReply(channelName,context.username,`${params[0]} is afk: ` +
-			`${afkUsers[i].afkmessage}` + ` (${moment().from(afkUsers[i].time)})`);
+			`${afkUsers[i].afkmessage}` + ` (${moment(afkUsers[i].afkat).fromNow()})`);
 			return;
 		}
 	}
@@ -286,7 +287,7 @@ async function checkAfk(channelName,user) {
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == user) {
 			await sendMessage(channelName,`${user} is back: ` +
-			`${afkUsers[i].afkmessage}`+ ` (${moment().from(afkUsers[i].time)})`);
+			`${afkUsers[i].afkmessage}`+ ` (${moment(afkUsers[i].afkat).fromNow()})`);
 			afkUsers.splice(i,1);
 			saveafkUsers();
 		}
@@ -568,11 +569,11 @@ async function notify(channelName, context, params) {
 		let pinger = context.username.split('').join(invisibleAntiPingCharacter);
 		var message = pinger + " : " + params.slice(1).join(" ");
 	}
-	var time=moment();
+	var now=moment().toObject();
 	currentNotify.push({
         notifyuser: user,
         notifymessage: message,
-		notifytime: time
+		notifytime: now
     });
 	
 	saveCurrentNotify();
@@ -609,7 +610,7 @@ async function checkNotifies(channelName, user) {
 	if(!(offlineChatOnly && currentData[channelName]["live"])) {
 		for(let i=0;i<currentNotify.length;i++) {
 			if(currentNotify[i].notifyuser === user) {
-				let thisIterationMessage = currentNotify[i].notifymessage+ ` (${moment().from(currentNotify[i].time)})`;
+				let thisIterationMessage = currentNotify[i].notifymessage+ ` (${moment(currentNotify[i].notifytime).fromNow()})`;
 				currentNotify.splice(i,1);
 				i--;
 				if(firstMessage) {
