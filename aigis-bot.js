@@ -167,6 +167,7 @@ async function percent(channelName,context,params) {
 	await sendMessage(channelName,`% ${message} : ${randomNumber}%`);
 }
 
+let cookieTimers=[];
 async function cookie(channelName,context,params) {
 	let channelData = config.enabledChannels[channelName];
 	let protection = channelData["protection"] || {};
@@ -177,7 +178,16 @@ async function cookie(channelName,context,params) {
 	if(offlineChatOnly && !(currentData[channelName]["live"])) {
 		return;
 	}
-	
+	for(let i=0;i<cookieTimers.length;i++) {
+		if(cookieTimers[i].user==context.username) {
+			if(moment().isBefore(cookieTimers[i].time)) {
+				await sendReply(channelName,context.username,"You can eat your next cookie" +
+				` ${moment().to(cookieTimers[i].time)} OpieOP `);
+				return;
+			}
+			cookieTimers.splice(i,1);
+		}
+	}
 	let options = {
         method: 'GET',
         json: true,
@@ -198,7 +208,12 @@ async function cookie(channelName,context,params) {
 		if(foundDash>=2) {
 			message = message.substring(0,i-3);
 		}
+		cookieTimers.push({
+			user: context.username,
+			time: moment().add(4,'hours')
+		});
         await sendReply(channelName,context.username,message);
+		
 
     } catch (error) {
         console.log(error);
