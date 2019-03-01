@@ -222,7 +222,7 @@ async function cookie(channelName,context,params) {
 }
 
 async function notifyhelp(channelName,context,params) {
-	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp https://github.com/Niosver/yoinkedtitlechange-bot");
+	await sendReply(channelName,context.username, "I don't want to type it all out here check the github OkayChamp https://github.com/Niosver/Best_Toaster_Bot");
 }
 async function afk(channelName,context,params) {
 	
@@ -262,7 +262,6 @@ async function isAfk(channelName,context,params) {
 	
 	for(let i=0;i<afkUsers.length;i++) {
 		if(afkUsers[i].afkuser == params[0]) {
-			console.log(`${afkUsers[i].time}`);
 			await sendReply(channelName,context.username,`${params[0]} is afk: ` +
 			`${afkUsers[i].afkmessage}` + ` (${moment(afkUsers[i].afkat).fromNow()})`);
 			return;
@@ -1719,9 +1718,6 @@ function onMessageHandler(target, context, msg, self) {
 	
 	// trim away the leading # character
     target = target.substring(1);
-	if(msg.includes("uwu")) {
-		sendReply(target,context.username,"https://i.imgur.com/xUI8B9O.jpg");
-	}
 	//Check CurrentNotifies array for messages to send
 	checkNotifies(target,context.username);
 	checkAfk(target,context.username);
