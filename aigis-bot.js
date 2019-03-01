@@ -1721,7 +1721,9 @@ function onMessageHandler(target, context, msg, self) {
 	//Check CurrentNotifies array for messages to send
 	checkNotifies(target,context.username);
 	checkAfk(target,context.username);
-	
+	if(context.username=="niosver" && msg=="!play") {
+		sendMessage(target,"!play");
+	}
 	if(msg.substr(0,1) == "%") {
 		percent(target,context,msg.slice(1).split(' ').splice(1));
 	}
