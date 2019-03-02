@@ -100,7 +100,7 @@ async function stocks(channelName,context,params) {
 }
 
 let positiveEmotes =["FeelsGoodMan","FeelsOkayMan","peepoHappy","widepeepoPog","PagChomp","OkayChamp","HYPERS","PepoCheer"];
-let neutralEmotes = ["FeelsDankMan","MEGADANK","eShrug","Jebaited","monkaHmm","Pepega","peepoDetective","4HEad"];
+let neutralEmotes = ["FeelsDankMan","MEGADANK","eShrug","Jebaited","monkaHmm","Pepega","peepoDetective","4HEad","DuckerZ"];
 let negativeEmotes=["FeelsBadMan","pepoGo","peepoSad","WeirdChampo","FeelsStrongMan","PeepoWeird","PepeHands","BibleThump"];
 async function eightball(channelName,context,params) {
 	let question = encodeURIComponent(params.slice(0).join(" "));
@@ -114,7 +114,7 @@ async function eightball(channelName,context,params) {
         let response = await request(options);
 		let message = response["magic"]["answer"];
 		let type = response["magic"]["type"];
-		let randomNumber = Math.floor(Math.random() * 9);
+		let randomNumber = Math.floor(Math.random() * 8);
 		if(type == "Neutral") {
 			await sendReply(channelName,context.username,message+ " " + neutralEmotes[randomNumber]);
 		}
