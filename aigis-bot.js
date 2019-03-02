@@ -606,7 +606,6 @@ async function checkNotifies(channelName, user) {
 	let msgToPrint ="";
 	let firstMessage=true;
 	currentNotify.filter(onlyUnique);
-	let protection = channelData["protection"] || {};
     let lengthLimit = protection["lengthLimit"] || 400;
 	if(!(offlineChatOnly && currentData[channelName]["live"])) {
 		for(let i=0;i<currentNotify.length;i++) {
