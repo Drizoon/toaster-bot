@@ -51,7 +51,9 @@ const knownCommands = [
 	percent,
 	eightball,
 	stocks,
-	userid];
+	userid,
+	part,
+	rejoin];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -64,7 +66,29 @@ let disabledPingers = [];
 let disabledPingees = [];
 let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
-
+async function rejoin(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	let channel = config.enabledChannels[params[0]];
+	if(typeof channel==="undefined") {
+		return;
+	}
+	await sendReply(channelName,context.username,"Attempting to reconnect to " + `${params[0]}...`);
+	client.join(params[0]);
+}
+async function part(channelName,context,params) {
+	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
+        return;
+    }
+	if(typeof params[0]!=="undefined") {
+		await sendReply(channelName,context.username,"Disconnecting from " + `${params[0]}...`);
+		client.part(params[0]);
+		return;
+	}
+	await sendReply(channelName,context.username,"Disconnecting from " + `${channelName}...`);
+	client.part(channelName);
+}
 async function userid(channelName,context,params) {
 	let username = encodeURIComponent(params[0]);
 	let options = {
