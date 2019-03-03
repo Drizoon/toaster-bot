@@ -50,7 +50,8 @@ const knownCommands = [
 	cookie,
 	percent,
 	eightball,
-	stocks];
+	stocks,
+	userid];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -64,6 +65,28 @@ let disabledPingees = [];
 let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
 
+async function userid(channelName,context,params) {
+	let username = encodeURIComponent(params[0]);
+	let options = {
+		method: 'GET',
+		json:true,
+		uri: 'https://api.twitch.tv/kraken/users?login=' + username,
+		headers: {
+            "Client-ID": config.krakenClientId,
+            "Accept": "application/vnd.twitchtv.v5+json"
+        }
+	};
+	try {
+		let response = await request(options);
+		let userid=response["users"][0]["_id"];
+		await sendReply(channelName,context.username,userid);
+	}catch (error) {
+        console.log(error);
+		await sendReply(channelName,context.username,"Error connecting to the api monkaS ");
+    }
+	
+	
+}
 async function stocks(channelName,context,params) {
 	let foundStock=false;
 	let i=0;
