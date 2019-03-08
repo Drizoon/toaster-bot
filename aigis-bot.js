@@ -8,7 +8,6 @@ const escapeStringRegexp = require('escape-string-regexp');
 const Timer = require('./edit-timer').Timer;
 const config = require('./config');
 var moment = require('moment');
-var mongo = require('mongodb');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
