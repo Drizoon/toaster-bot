@@ -8,6 +8,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 const Timer = require('./edit-timer').Timer;
 const config = require('./config');
 var moment = require('moment');
+var mongo = require('mongodb');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -53,7 +54,8 @@ const knownCommands = [
 	stocks,
 	userid,
 	part,
-	rejoin];
+	rejoin,
+	status];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -66,6 +68,14 @@ let disabledPingers = [];
 let disabledPingees = [];
 let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
+var uptime = new moment();
+
+
+
+async function status(channelName,context,params) {
+	await sendReply(channelName,context.username,`Bot has been running for ${uptime.fromNow(true)} monkaS`);
+}
+
 async function rejoin(channelName,context,params) {
 	if (!(config.administrators.includes(context.username) || config.moderators.includes(context.username))){
         return;
@@ -108,8 +118,6 @@ async function userid(channelName,context,params) {
         console.log(error);
 		await sendReply(channelName,context.username,"Error connecting to the api monkaS ");
     }
-	
-	
 }
 async function stocks(channelName,context,params) {
 	let foundStock=false;
@@ -1783,14 +1791,12 @@ function onMessageHandler(target, context, msg, self) {
         return;
     }
 
-
     // Split the message into individual words:
     const parse = msg.slice(1).split(' ');
     // The command name is the first (0th) one:
     const commandName = parse[0];
     // The rest (if any) are the parameters:
     const params = parse.splice(1);
-
 
     let channelConfig = config.enabledChannels[target] || {};
     let disabledCommands = (channelConfig.protection || {}).disabledCommands || [];
