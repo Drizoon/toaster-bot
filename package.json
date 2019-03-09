@@ -22,7 +22,7 @@
     "node-async-locks": "^1.0.1",
     "node-persist": "^3.0.1",
     "request-promise": "^4.2.2",
-    "moment": "^2.24.0",
+    "reverse-line-reader": "^0.2.6",
     "tmi.js": "^1.2.1"
   },
   "devDependencies": {}
