@@ -80,7 +80,7 @@ async function nuke(channelName,context,params) {
 	}
 	var time = new moment();
 	let year = time.year();
-	let month = time.month();
+	let month = time.month()+1;
 	let day = time.date();
 	var phrase = params[0];
 	var timenum = parseInt(params[1].match(/\d+/)[0]);
@@ -133,7 +133,7 @@ async function nuke(channelName,context,params) {
 async function logChat(channelName,context,msg) {
 	var timestamp = new moment();
 	let year = timestamp.year();
-	let month = timestamp.month();
+	let month = timestamp.month()+1;
 	let day = timestamp.date();
 	let username = context.username;
 	
