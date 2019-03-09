@@ -75,7 +75,7 @@ var uptime = new moment();
 
 var users=[];
 async function nuke(channelName,context,params) {
-	if(!context.mod || !config.modChannels.includes(channelName)) {
+	if(!(context.mod || config.modChannels.includes(context.username)) || !config.modChannels.includes(channelName)) {
 		return;
 	}
 	var time = new moment();
