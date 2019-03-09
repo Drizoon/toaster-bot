@@ -73,7 +73,6 @@ let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
 var uptime = new moment();
 
-var users=[];
 async function nuke(channelName,context,params) {
 	if(!(context.mod || config.modChannels.includes(context.username)) || !config.modChannels.includes(channelName)) {
 		return;
@@ -103,7 +102,7 @@ async function nuke(channelName,context,params) {
 	var timeoutTime=params[2];
 	var timeago = time.subtract(timenum,timeSpec);
 	console.log(timeago.format("dddd, MMMM Do YYYY, H:mm:ss"));
-	users.splice(0,users.length-1);
+	var users=[];
 	linereader.eachLine(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, async function(line,last) {
 		let endTimeString = line.indexOf(']');
 		let timestring = line.substring(0,endTimeString);
