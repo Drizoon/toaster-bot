@@ -8,6 +8,9 @@ const escapeStringRegexp = require('escape-string-regexp');
 const Timer = require('./edit-timer').Timer;
 const config = require('./config');
 var moment = require('moment');
+const fs = require('fs');
+var mkdirp = require('mkdirp');
+var linereader = require('reverse-line-reader');
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -54,7 +57,8 @@ const knownCommands = [
 	userid,
 	part,
 	rejoin,
-	status];
+	status,
+	nuke];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -69,7 +73,74 @@ let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
 var uptime = new moment();
 
-
+var users=[];
+async function nuke(channelName,context,params) {
+	if(!context.mod || !config.modChannels.includes(channelName)) {
+		return;
+	}
+	var time = new moment();
+	let year = time.year();
+	let month = time.month();
+	let day = time.date();
+	var phrase = params[0];
+	var timenum = parseInt(params[1]);
+	let timeSpec = params[2];
+	var timeoutTime=params[3];
+	var timeago = time.subtract(timenum,timeSpec);
+	users.splice(0,users.length-1);
+	linereader.eachLine(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, async function(line,last) {
+		let endTimeString = line.indexOf(']');
+		let timestring = line.substring(0,endTimeString);
+		line = line.substring(endTimeString+1).trim();
+		let data = line.slice(1).split(' ');
+		data = data.slice(1);
+		let msg = data.slice(1);
+		let user = data[0].slice(0,-1);
+		let timestamp = moment(timestring,"dddd, MMMM Do YYYY, H:mm:ss");
+		if(timestamp.isAfter(timeago)) {
+			if(msg.includes(phrase)) {
+				if(!users.includes(user)) {
+					users.push(user);
+				}
+			}
+		}
+		else {
+			return false;
+		}
+	}).then(async function () {
+		console.log(users);
+		for(let i=0;i<users.length;i++) {
+			await sendMessage(channelName,`/timeout ${users[i]} ${timeoutTime} nuking`);
+		}
+	});
+}
+async function addUser(user) {
+	if(!users.includes(user)) {
+		users.push(user);
+	}
+	console.log(users);
+}
+async function logChat(channelName,context,msg) {
+	var timestamp = new moment();
+	let year = timestamp.year();
+	let month = timestamp.month();
+	let day = timestamp.date();
+	let username = context.username;
+	
+	mkdirp(`./logs/channel/${channelName}/${year}/${month}/${day}`, function(err) {
+		if (err) console.log(err) 
+	});
+	mkdirp(`./logs/channel/${channelName}/users`, function (err) {
+		if (err) console.log(err)
+	});
+	var line = `\n[${timestamp.format('dddd, MMMM Do YYYY, H:mm:ss')}] #${channelName} ${username}: ${msg}`;
+	fs.appendFile(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, line, (err) => {
+		if (err) console.log(err);
+	});
+	fs.appendFile(`./logs/channel/${channelName}/users/${username}.txt`, line,(err) => {
+		if (err) console.log(err);
+	});
+}
 
 async function status(channelName,context,params) {
 	await sendReply(channelName,context.username,`Bot has been running for ${uptime.fromNow(true)} monkaS`);
@@ -1756,7 +1827,7 @@ async function connect() {
 
 const endStripRegex = /[\s\u206D]+$/u;
 
-function onMessageHandler(target, context, msg, self) {
+async function onMessageHandler(target, context, msg, self) {
     if (self) {
         return;
     }
@@ -1774,6 +1845,7 @@ function onMessageHandler(target, context, msg, self) {
 	// trim away the leading # character
     target = target.substring(1);
 	//Check CurrentNotifies array for messages to send
+	await logChat(target,context,msg);
 	checkNotifies(target,context.username);
 	checkAfk(target,context.username);
 	if(context.username=="niosver" && msg=="!play") {
@@ -1789,7 +1861,6 @@ function onMessageHandler(target, context, msg, self) {
     if (msg.substr(0, 1) !== config.commandPrefix) {
         return;
     }
-
     // Split the message into individual words:
     const parse = msg.slice(1).split(' ');
     // The command name is the first (0th) one:
