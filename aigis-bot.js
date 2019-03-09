@@ -83,10 +83,26 @@ async function nuke(channelName,context,params) {
 	let month = time.month();
 	let day = time.date();
 	var phrase = params[0];
-	var timenum = parseInt(params[1]);
-	let timeSpec = params[2];
-	var timeoutTime=params[3];
+	var timenum = parseInt(params[1].match(/\d+/)[0]);
+	let timeChar = params[1].replace(/\d+/g,'');
+	let timeSpec = "";
+	if(timeChar == "m") {
+		timeSpec = "minutes";
+	}
+	else if(timeChar=="s") {
+		timeSpec = "seconds";
+	}
+	else if(timeChar=="h") {
+		timeSpec = "hours";
+	}
+	else {
+		await sendReply(channelName,context.username,`${params[1]} is not a valid time config`);
+		return;
+	}
+
+	var timeoutTime=params[2];
 	var timeago = time.subtract(timenum,timeSpec);
+	console.log(timeago.format("dddd, MMMM Do YYYY, H:mm:ss"));
 	users.splice(0,users.length-1);
 	linereader.eachLine(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, async function(line,last) {
 		let endTimeString = line.indexOf(']');
@@ -108,18 +124,12 @@ async function nuke(channelName,context,params) {
 			return false;
 		}
 	}).then(async function () {
-		console.log(users);
 		for(let i=0;i<users.length;i++) {
 			await sendMessage(channelName,`/timeout ${users[i]} ${timeoutTime} nuking`);
 		}
 	});
 }
-async function addUser(user) {
-	if(!users.includes(user)) {
-		users.push(user);
-	}
-	console.log(users);
-}
+
 async function logChat(channelName,context,msg) {
 	var timestamp = new moment();
 	let year = timestamp.year();
