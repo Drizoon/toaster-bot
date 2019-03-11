@@ -57,7 +57,8 @@ const knownCommands = [
 	part,
 	rejoin,
 	status,
-	nuke];
+	nuke,
+	wipelogs];
 
 // the main data storage object.
 // stores for each channel (key):
@@ -72,6 +73,14 @@ let afkUsers = [];
 const invisibleAntiPingCharacter = "\u206D";
 var uptime = new moment();
 
+async function wipelogs(channelName,context,params) {
+	if(!config.administrators.includes(context.username)) {
+		return;
+	}
+	fs.remove(`./logs/channel/${params[0]}`, (err) => {
+			if(err) console.log(err);
+		});
+}
 async function nuke(channelName,context,params) {
 	if(!(context.mod || config.modChannels.includes(context.username)) || !config.modChannels.includes(channelName)) {
 		return;
@@ -127,32 +136,27 @@ async function nuke(channelName,context,params) {
 		}
 	});
 }
-async function removeOldFiles(time) {
-	let fileExists=true;
-	let year = time.year();
-	let month = time.month()+1;
-	let day = time.date()-1;
-	while(fileExists) {
-		fs.access(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, (err) => {
-			if(err) {
-				fileExists=false;
-			}
-			else {
-				fs.remove(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, (err) => {
-					if(err) console.log(err);
-				}
-				day--;
-				if(day<0) {
-					day =30;
-					month--;
-				}
-			}
-		});	
+async function removeOldFiles() {
+	let channels=config.opts.channels;
+	var time = new moment();
+	var year;
+	var month;
+	var day;
+	for (let i=0;i<channels.length;i++) {
+		let channelName=channels[i].substr(1);
+		var time = new moment();
+		time.subtract(1,"days");
+		year = time.year();
+		month=time.month()+1;
+		day=time.date();
+		console.log(` deleting ./logs/channel/${channelName}/${year}/${month}/${day}`);
+		fs.remove(`./logs/channel/${channelName}/${year}/${month}/${day}`, (err) => {
+			if(err) console.log(err);
+		});
 	}
 }
 async function logChat(channelName,context,msg) {
 	var timestamp = new moment();
-	await removeOldFiles(timestamp);
 	let year = timestamp.year();
 	let month = timestamp.month()+1;
 	let day = timestamp.date();
@@ -1846,7 +1850,9 @@ async function connect() {
     // intentionally don't await this promise, since we want to start the refresh loop right away.
     // noinspection JSIgnoredPromiseFromCall
     refreshData();
+	removeOldFiles();
     // poll every X seconds
+	setInterval(removeOldFiles,77760000) //.9 days, guaranteed to run every day
     setInterval(refreshData, 5 * 1000);
 }
 
