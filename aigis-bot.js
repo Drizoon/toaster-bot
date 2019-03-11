@@ -8,8 +8,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 const Timer = require('./edit-timer').Timer;
 const config = require('./config');
 var moment = require('moment');
-const fs = require('fs');
-var mkdirp = require('mkdirp');
+const fs = require('fs-extra');
 var linereader = require('reverse-line-reader');
 
 function sleep(ms) {
@@ -128,25 +127,42 @@ async function nuke(channelName,context,params) {
 		}
 	});
 }
-
+async function removeOldFiles(time) {
+	let fileExists=true;
+	let year = time.year();
+	let month = time.month()+1;
+	let day = time.date()-1;
+	while(fileExists) {
+		fs.access(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, (err) => {
+			if(err) {
+				fileExists=false;
+			}
+			else {
+				fs.remove(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, (err) => {
+					if(err) console.log(err);
+				}
+				day--;
+				if(day<0) {
+					day =30;
+					month--;
+				}
+			}
+		});	
+	}
+}
 async function logChat(channelName,context,msg) {
 	var timestamp = new moment();
+	await removeOldFiles(timestamp);
 	let year = timestamp.year();
 	let month = timestamp.month()+1;
 	let day = timestamp.date();
 	let username = context.username;
 	
-	mkdirp(`./logs/channel/${channelName}/${year}/${month}/${day}`, function(err) {
+	fs.ensureFile(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, function(err) {
 		if (err) console.log(err) 
-	});
-	mkdirp(`./logs/channel/${channelName}/users`, function (err) {
-		if (err) console.log(err)
 	});
 	var line = `\n[${timestamp.format('dddd, MMMM Do YYYY, H:mm:ss')}] #${channelName} ${username}: ${msg}`;
 	fs.appendFile(`./logs/channel/${channelName}/${year}/${month}/${day}/channel.txt`, line, (err) => {
-		if (err) console.log(err);
-	});
-	fs.appendFile(`./logs/channel/${channelName}/users/${username}.txt`, line,(err) => {
 		if (err) console.log(err);
 	});
 }
