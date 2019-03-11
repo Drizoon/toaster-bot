@@ -1,21 +1,21 @@
 {
-  "name": "bot-titlechange",
+  "name": "toaster-bot",
   "version": "0.0.1-SNAPSHOT",
   "description": "",
-  "main": "bot-titlechange.js",
+  "main": "aigis-bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RAnders00/bot-titlechange.git"
+    "url": ""
   },
-  "author": "Ruben Anders <ruben.anders@zwb3.de>",
+  "author": "Niosver",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/RAnders00/bot-titlechange/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/RAnders00/bot-titlechange#readme",
+  "homepage": "",
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "fs-extra": "^7.0.1",
