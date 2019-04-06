@@ -322,8 +322,6 @@ async function percent(channelName,context,params) {
 }
 
 let cookieTimers=[];
-let cooldownNumber = 4;
-let cooldownTimeSpec="hours";
 async function cookie(channelName,context,params) {
 	let channelData = config.enabledChannels[channelName];
 	let protection = channelData["protection"] || {};
@@ -334,14 +332,11 @@ async function cookie(channelName,context,params) {
 	if(offlineChatOnly && !(currentData[channelName]["live"])) {
 		return;
 	}
-	
-	let cooldownCheck = new moment().subtract(cooldownNumber,cooldownTimeSpec);
 	for(let i=0;i<cookieTimers.length;i++) {
 		if(cookieTimers[i].user==context.username) {
-			if(cooldownCheck.isBefore(cookieTimers[i].time)) {
-				let cookieTimeAgo = new moment(cookieTimers[i].time);
+			if(moment().isBefore(cookieTimers[i].time)) {
 				await sendReply(channelName,context.username,"You can eat your next cookie" +
-				` ${moment().to(cookieTimeAgo.add(cooldownNumber,cooldownTimeSpec))} OpieOP `);
+				` ${moment().to(cookieTimers[i].time)} OpieOP `);
 				return;
 			}
 			cookieTimers.splice(i,1);
@@ -369,7 +364,7 @@ async function cookie(channelName,context,params) {
 		}
 		cookieTimers.push({
 			user: context.username,
-			time: moment()
+			time: moment().add(4,'hours')
 		});
         await sendReply(channelName,context.username,message);
 		
