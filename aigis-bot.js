@@ -1850,9 +1850,9 @@ async function connect() {
     // intentionally don't await this promise, since we want to start the refresh loop right away.
     // noinspection JSIgnoredPromiseFromCall
     refreshData();
-	removeOldFiles();
+    removeOldFiles();
     // poll every X seconds
-	setInterval(removeOldFiles,77760000) //.9 days, guaranteed to run every day
+    setInterval(removeOldFiles,24*60*60*1000) //run every day
     setInterval(refreshData, 5 * 1000);
 }
 
