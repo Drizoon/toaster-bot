@@ -257,6 +257,15 @@ let positiveEmotes =["FeelsGoodMan","FeelsOkayMan","peepoHappy","widepeepoPog","
 let neutralEmotes = ["FeelsDankMan","MEGADANK","eShrug","Jebaited","monkaHmm","Pepega","peepoDetective","4HEad","DuckerZ"];
 let negativeEmotes=["FeelsBadMan","pepoGo","peepoSad","WeirdChampo","FeelsStrongMan","PeepoWeird","PepeHands","BibleThump"];
 async function eightball(channelName,context,params) {
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
 	let question = encodeURIComponent(params.slice(0).join(" "));
 	let options = {
         method: 'GET',
@@ -289,6 +298,15 @@ async function eightball(channelName,context,params) {
 	
 }
 async function percent(channelName,context,params) {
+	let channelData = config.enabledChannels[channelName];
+	let protection = channelData["protection"] || {};
+	let offlineChatOnly = protection["offlineOnly"];
+    if (typeof offlineChatOnly === "undefined") {
+        offlineChatOnly = false;
+    }
+	if(offlineChatOnly && !(currentData[channelName]["live"])) {
+		return;
+	}
 	let foundIs=false;
 	let foundAre=false;
 	let i=0;
@@ -1883,10 +1901,14 @@ async function onMessageHandler(target, context, msg, self) {
 		sendMessage(target,"!play");
 	}
 	if(msg.substr(0,1) == "%") {
-		percent(target,context,msg.slice(1).split(' ').splice(1));
+		if (context.mod || !currentData[target]["live"]) {
+			percent(target,context,msg.slice(1).split(' ').splice(1));
+		}
 	}
 	if(msg.substr(0,6) =="$8ball") {
-		eightball(target,context,msg.slice(1).split(' ').splice(1));
+		if (context.mod || !currentData[target]["live"]) {
+			eightball(target,context,msg.slice(1).split(' ').splice(1));
+		}
 	}
     // This isn't a command since it has no prefix:
     if (msg.substr(0, 1) !== config.commandPrefix) {
