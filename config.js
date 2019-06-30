@@ -7,16 +7,13 @@ const opts = {
         secure: true
     },
     identity: {
-        username: 'Best_Toaster',
+        username: 'Conkers_Bot',
         password: secrets.ircPassword
     },
     channels: [
-        '#niosver',
         '#drizoon',
         '#bananabrea',
-		'#vincie',
-		'#carlson5233',
-		'#cailighto'/**/
+		'#papavince',
     ]
 };
 
@@ -29,27 +26,25 @@ const krakenClientId = secrets.krakenClientId;
 // list of users with superuser privileges. Use with extreme caution, since
 // these users have access to arbitrary code execution with !debug
 let administrators = [
-    'niosver',
-	'cailighto'
+    'drizoon',
+	
 ];
 
 let moderators = [
-	'drizoon',
-	'tree_house',
-	'trixplays'
+	'niosver',
+
 ];
 
 // The bot will post a "I am running"-style message to this channel on startup.
-const startupChannel = 'cailighto';
+const startupChannel = 'drizoon';
 
 // if a channel is offline-only protected, and a change occurs, the bot prints
 // to this channel instead of the channel the change occurred in.
-const onlinePrintChannel = 'niosver';
+const onlinePrintChannel = 'drizoon';
 
 // list of channel names where the bot is not limited to the global 1.2 second
 // slowmode (channels it is broadcaster, moderator or VIP in)
 const modChannels = [
-    'niosver',
 	"drizoon",
 	"bananabrea"
 ];
@@ -72,25 +67,12 @@ function obfuscateName(str) {
 }
 
 let enabledChannels = {
-	"niosver": {
-		"id": 74576151,
-		"formats": {
-			"title": ":eyes: new title $VALUE$ :eyes: ",
-			"game": ":eyes: new game $VALUE$ :eyes: ",
-			"offline": "Niosver is offline FeelsGoodMan Clap 👉 ",
-			"live": "Niosver is live peepoChrist 👉 "
-		},
-		/*"protection": {
-            "offlineOnly": true
-        }*/
-	},
 	"drizoon": {
 		"id": 26890918,
 		"formats": {
 			"title": "drizooLurk New Title 👉 $VALUE$ 👉 ",
 			"game": "drizooLurk Game has been updated 👉 $VALUE$ 👉 ",
-			"live": "Live ppHop 👉 ",
-			"partner": "PogChamp Dad is partnered PogChamp 👉 "
+
 		},
 	},
 	"bananabrea": {
@@ -98,110 +80,17 @@ let enabledChannels = {
 		"formats": {
 			"title": "breaLurk New Title 👉 $VALUE$ 👉 ",
 			"game": "breaLurk Game has been updated 👉 $VALUE$ 👉 ",
-			"offline": "Mum is offline FeelsGoodMan Clap 👉 ",
-			"live": "Mum is live peepoPog 👉 "
+			"offline": "Banana is offline FeelsGoodMan Clap 👉 ",
+			"live": "Banana is live peepoPog 👉 "
 		},
 	},
-	"vincie": {
+	"papavince": {
 		"id": 54502482,
 		"formats": {
 			"live": "Vince is live with yearly stream FeelsGoodMan Clap 👉 ",
 			"offline": "ButterSauce Another year of silence ButterSauce 👉 "
 		},
 	},
-	"carlson5233": {
-		"id": 25495913,
-		"formats": {
-			"live": "carlson is live FeelsOkayMan 👉 "
-		},
-	},
-	"cailighto": {
-		"id": 411543142,
-		"formats": {
-			"live": "Required value 4Head "
-		},
-	},
-
-	/*
-    "randers00": {
-        "id": 40286300,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp 👉 $VALUE$ 👉 ",
-            "live": "ppHop randers00 is live ppHop 👉 ",
-            "offline": "MistyHisty randers00 has gone offline MistyHisty 👉 ",
-            "partner": "lol partnered "
-        }, "protection": {
-            "valueLengthLimit": 80
-        }
-    },
-    "forsen": {
-        "id": 22484632,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp 👉 $VALUE$ 👉 ",
-            "live": "KKool GuitarTime FORSEN HAS GONE LIVE! KKool GuitarTime 👉 ",
-            "offline": "FeelsGoodMan Clap FORSEN HAS GONE OFFLINE! FeelsGoodMan Clap 👉 "
-        },
-        "protection": {
-            "endpoint": "https://forsen.tv/api/v1/banphrases/test",
-            "pajbotLinkFilter": true,
-            "offlineOnly": true,
-            "disabledCommands": [
-                "debug"
-            ]
-        }
-    },
-    "pajlada": {
-        "id": 11148817,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp 👉 $VALUE$ 👉 ",
-            "live": `PagChomp 👉 ${obfuscateName("pajlada")} has gone live pajaH 👉 `,
-            "offline": `pajaSad ${obfuscateName("pajlada")} has gone offline pajaSad 👉 `
-        },
-        "protection": {
-            "endpoint": "https://paj.pajlada.se/api/v1/banphrases/test",
-            "disabledCommands": [
-                "bot",
-                "ping",
-                "help",
-                "game",
-                "title",
-                "debug"
-            ]
-        }
-    },
-    "nymn": {
-        "id": 62300805,
-        "formats": {
-            "title": "peepoPog NEW TITLE! peepoPog 👉 $VALUE$ 👉 ",
-            "game": "peepoPog NEW GAME! peepoPog 👉 $VALUE$ 👉 ",
-            "live": "peepoPog NYMN HAS GONE LIVE! peepoPog 👉 ",
-            "offline": "FeelsBadMan NYMN HAS GONE OFFLINE! FeelsBadMan 👉 "
-        },
-        "protection": {
-            "endpoint": "https://nymn.pajbot.com/api/v1/banphrases/test",
-            "lengthLimit": 300, // only in online chat
-            //"noPingMode": true,
-            "disabledCommands": [
-                // "notifyme"
-            ]
-        }
-    },
-    "vadikus007": {
-        "id": 72256775,
-        "formats": {
-            "title": "PagChomp NEW TITLE! PagChomp FeelsPingedMan 👉 $VALUE$ 👉 ",
-            "game": "PagChomp NEW GAME! PagChomp FeelsPingedMan 👉 $VALUE$ 👉 ",
-            "live": "PagChomp VADIKUS HAS GONE LIVE! PagChomp FeelsPingedMan 👉 ",
-            "offline": "FeelsBadMan VADIKUS HAS GONE OFFLINE! FeelsBadMan 👉 ",
-            "partner": "PagChomp PagChomp PagChomp PagChomp 👉 VADIKUS IS NOW A TWITCH PARTNER!!!! PagChomp PagChomp PagChomp PagChomp 👉 "
-        },
-        "protection": {
-            "lengthLimit": 250
-        }
-    }**//**/
 	
 };
 
